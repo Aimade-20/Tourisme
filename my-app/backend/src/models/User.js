@@ -24,8 +24,11 @@ const userSchema = new Schema({
     enum: ["admin", "user", "guide"],
     default: "user",
   },
-  createdAt: { type: Date, default: Date.now },
-});
+},
+{
+  timestamps: true,
+},
+);
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
