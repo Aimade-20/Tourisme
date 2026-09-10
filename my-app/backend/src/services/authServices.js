@@ -11,6 +11,7 @@ const register = async (data) => {
     {
       userID: user._id,
       role: user.role,
+      isApproved : user.isApproved
     },
     process.env.JWT_SECRET,
     {
@@ -37,6 +38,7 @@ const login = async ({ email, password }) => {
     {
       userID: user._id,
       role: user.role,
+      isApproved : user.isApproved
     },
     process.env.JWT_SECRET,
     {

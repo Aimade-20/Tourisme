@@ -10,6 +10,7 @@ app.use(express.json());
 
 // Routes
 app.use("/auth", authRoutes);
+app.use("/", authRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "done" });

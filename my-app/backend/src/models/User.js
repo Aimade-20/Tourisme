@@ -20,10 +20,13 @@ const userSchema = new Schema({
 },
   role: {
     type: String,
-    require: true,
     enum: ["admin", "user", "guide"],
     default: "user",
   },
+  isApproved :{
+    type : Boolean,
+    default : false
+  }
 },
 {
   timestamps: true,
