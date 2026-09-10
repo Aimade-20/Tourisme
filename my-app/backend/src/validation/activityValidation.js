@@ -80,4 +80,4 @@ const activityValidation = [
     .withMessage("Each image must be a string"),
 ];
 
-module.exports =activityValidation
+module.exports=activityValidation

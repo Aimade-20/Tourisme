@@ -67,13 +67,6 @@ const activitySchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-
-    images: [
-      {
-        type: String,
-      },
-    ],
-
     guide: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
