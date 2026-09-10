@@ -5,7 +5,8 @@ const { registerUser, loginUser } = require("../controllers/authController");
 const {
   createActivityController,
   getAllActivityController,
-  getActivityByIdController
+  getActivityByIdController,
+  updateActivityController
 } = require("../controllers/activityController");
 
 const authMiddleware = require("../middlewares/authMiddleware.js");
@@ -29,4 +30,5 @@ router.post(
 );
 router.get("/activitys", getAllActivityController);
 router.get("/activitys/:id",getActivityByIdController);
+router.put("/activitys/:id",updateActivityController)
 module.exports = router;

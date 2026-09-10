@@ -3,6 +3,7 @@ const {
   createActivity,
   getAllActivity,
   getActivityById,
+  updateActivity,
 } = require("../services/activityServices");
 
 const createActivityController = async (req, res, next) => {
@@ -58,8 +59,27 @@ const getActivityByIdController = async (req, res, next) => {
   }
 };
 
+const updateActivityController = async (req, res, next) => {
+  try {
+    const activity = await updateActivity(req.params.id , req.body);
+    if (!activity) {
+      return res.status(404).json({
+        message: "activity not found",
+      });
+    }
+    return res.status(201).json({
+      message: "successfully",
+      activitys: activity,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 module.exports = {
   createActivityController,
   getAllActivityController,
   getActivityByIdController,
+  updateActivityController,
 };

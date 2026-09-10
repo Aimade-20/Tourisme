@@ -11,14 +11,28 @@ const getAllActivity = async () => {
 };
 
 const getActivityById = async (_id) => {
-  // const activity = await Activitys.findOne().populate("guide" , "name email role")
   const activity = await Activitys.findById(_id).populate(
     "guide",
     "name email role",
   );
-  console.log("id", _id);
-  console.log("servis activity", activity);
+  // console.log("id", _id);
+  // console.log("servis activity", activity);
 
   return activity;
 };
-module.exports = { createActivity, getAllActivity, getActivityById };
+
+const updateActivity = async (_id,data) => {
+  const activity = await Activitys.findByIdAndUpdate(_id , data , {new : true}).populate(
+    "guide",
+    "name email role",
+  );
+  // console.log("id", _id);
+  // console.log("servis activity", activity);
+  return activity;
+};
+module.exports = {
+  createActivity,
+  getAllActivity,
+  getActivityById,
+  updateActivity,
+};
