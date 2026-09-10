@@ -1,6 +1,6 @@
 const { body } = require("express-validator");
 
-const createActivityValidation = [
+const activityValidation = [
   body("title")
     .trim()
     .notEmpty()
@@ -80,6 +80,4 @@ const createActivityValidation = [
     .withMessage("Each image must be a string"),
 ];
 
-module.exports = {
-  createActivityValidation,
-};
+module.exports =activityValidation

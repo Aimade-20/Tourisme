@@ -16,4 +16,4 @@ const activitysControlle = async (req , res , next) => {
         next(error)
     }
 }
-module.exports = {activitysControlle}
+module.exports =activitysControlle
