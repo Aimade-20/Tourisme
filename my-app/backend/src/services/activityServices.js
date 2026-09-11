@@ -30,9 +30,15 @@ const updateActivity = async (_id,data) => {
   // console.log("servis activity", activity);
   return activity;
 };
+
+const deletActivity = async (_id) => {
+  const activity = await Activitys.findByIdAndDelete(_id)
+  return activity.title
+}
 module.exports = {
   createActivity,
   getAllActivity,
   getActivityById,
   updateActivity,
+  deletActivity
 };

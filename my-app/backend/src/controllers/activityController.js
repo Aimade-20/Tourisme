@@ -4,6 +4,7 @@ const {
   getAllActivity,
   getActivityById,
   updateActivity,
+  deletActivity
 } = require("../services/activityServices");
 
 const createActivityController = async (req, res, next) => {
@@ -42,8 +43,8 @@ const getActivityByIdController = async (req, res, next) => {
   try {
     const activity = await getActivityById(req.params.id);
     // console.log("activity" ,activity);
-    console.log("PARAMS:", req.params);
-    console.log("ID:", req.params.id);
+    // console.log("PARAMS:", req.params);
+    // console.log("ID:", req.params.id);
     if (!activity) {
       return res.status(404).json({
         message: "activity not found",
@@ -77,9 +78,29 @@ const updateActivityController = async (req, res, next) => {
   }
 };
 
+const deleteActivityController = async (req ,res , next) => {
+  try {
+    const activity = deletActivity(req.params.id)
+    console.log("PARAMS:", req.params);
+    console.log("ID:", req.params.id);
+    if (!activity) {
+      return res.status(404).json({
+        message : "activity not found"
+      })
+    }
+    return res.status(201).json({
+      message : "activity delete successfully"
+    })
+  } catch (error) {
+    console.log(error);
+    next(error)
+  }
+}
+
 module.exports = {
   createActivityController,
   getAllActivityController,
   getActivityByIdController,
   updateActivityController,
+  deleteActivityController
 };

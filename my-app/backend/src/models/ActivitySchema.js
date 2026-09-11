@@ -64,8 +64,10 @@ const activitySchema = new mongoose.Schema(
 
     availablePlaces: {
       type: Number,
-      required: true,
       min: 0,
+      default: function () {
+        return this.maxParticipants;
+      },
     },
     guide: {
       type: mongoose.Schema.Types.ObjectId,
@@ -75,7 +77,7 @@ const activitySchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Activity = mongoose.model("Activity", activitySchema);
