@@ -1,5 +1,7 @@
 const Reservation = require("../models/Reservation")
 const Activitys = require("../models/ActivitySchema")
+
+
  const createReservation = async (activityId, userId, numberOfPlaces) => {
     const activity = await Activitys.findById(activityId)
   if (!activity) {
@@ -19,5 +21,24 @@ const Activitys = require("../models/ActivitySchema")
     })
     return reservation
 }
+
+const cancellation = async (reservationId, userId, numberOfPlaces) => {
+  try {
+    const reservation = await Reservation.findById(reservationId)
+    if (!reservation) {
+      throw new Error("reservation not found .")
+    }
+    if(reservation.user != userId){
+      throw new Error("can not cancel this res")
+    }
+    if (reservation.status === "cancelled") {
+      throw new Error("")
+    }
+  } catch (error) {
+    
+  }
+}
+
+
 
 module.exports = createReservation

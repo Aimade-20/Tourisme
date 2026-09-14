@@ -5,7 +5,7 @@ const { body } = require("express-validator");
     .trim()
     .notEmpty()
     .withMessage("Rating is required")
-    .isInt({ min: 1, max: 5 })
+    .isFloat({ min: 1, max: 5 })
     .withMessage("Rating must be between 1 and 5"),
 
   body("comment")
