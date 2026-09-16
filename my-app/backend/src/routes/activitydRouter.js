@@ -7,6 +7,7 @@ const {
   getActivityByIdController,
   updateActivityController,
   deleteActivityController,
+  getActivitiesController,
 } = require("../controllers/activityController");
 
 const authMiddleware = require("../middlewares/authMiddleware.js");
@@ -20,8 +21,10 @@ router.post(
   activityValidation,
   createActivityController,
 );
-router.get("/activitys", getAllActivityController);
+// router.get("/activitys", getAllActivityController);
 router.get("/activitys/:id", getActivityByIdController);
 router.put("/activitys/:id", updateActivityController);
 router.delete("/activitys/:id", deleteActivityController);
+
+router.get("/activitys", getActivitiesController)
 module.exports = router;

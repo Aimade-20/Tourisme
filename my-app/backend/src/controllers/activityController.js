@@ -4,7 +4,8 @@ const {
   getAllActivity,
   getActivityById,
   updateActivity,
-  deletActivity
+  deletActivity,
+  getActivitiesFilter
 } = require("../services/activityServices");
 
 const createActivityController = async (req, res, next) => {
@@ -97,10 +98,27 @@ const deleteActivityController = async (req ,res , next) => {
   }
 }
 
+
+const getActivitiesController = async (req, res, next) => {
+    try {
+      // console.log("QUERY:", req.query);
+        const activities = await getActivitiesFilter(req.query);
+
+        return res.status(200).json({
+            message: "Activities retrieved successfully",
+            activities
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
   createActivityController,
   getAllActivityController,
   getActivityByIdController,
   updateActivityController,
-  deleteActivityController
+  deleteActivityController,
+  getActivitiesController
 };

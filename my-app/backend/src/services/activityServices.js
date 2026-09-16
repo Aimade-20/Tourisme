@@ -35,10 +35,45 @@ const deletActivity = async (_id) => {
   const activity = await Activitys.findByIdAndDelete(_id)
   return activity.title
 }
+
+
+
+const getActivitiesFilter = async (filters) => {
+    const query = {};
+
+    if (filters.city) {
+        query.city = {
+            $regex: filters.city,
+            $options: "i"
+        };
+    }
+
+    if (filters.category) {
+        query.category = filters.category;
+    }
+
+    if (filters.date) {
+        query.date = filters.date;
+    }
+
+    if (filters.maxPrice) {
+        query.price = {
+            $lte: Number(filters.maxPrice)
+        };
+    }
+
+    const activities = await Activitys.find(query)
+        .populate("guide", "name email role");
+
+    return activities;
+};
+
+
 module.exports = {
   createActivity,
   getAllActivity,
   getActivityById,
   updateActivity,
-  deletActivity
+  deletActivity,
+  getActivitiesFilter
 };
