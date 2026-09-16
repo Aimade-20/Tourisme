@@ -56,10 +56,13 @@ const getReservationsByGuide = async ( userId) => {
       (activity) => activity._id.toString() === reservation.activity.toString(),
     );
   });
+  console.log("guideReservations" ,guideReservations);
+  
   
   if (guideReservations.length === 0) {
-    throw new Error("");
+    throw new Error("You do not have any reservations .");
   }
+  return guideReservations
 };
 
 module.exports = { createReservation, cancellation, getReservationsByGuide };
