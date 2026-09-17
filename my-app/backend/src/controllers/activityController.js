@@ -63,7 +63,8 @@ const getActivityByIdController = async (req, res, next) => {
 
 const updateActivityController = async (req, res, next) => {
   try {
-    const activity = await updateActivity(req.params.id , req.body);
+    const userId = req.user._id;
+    const activity = await updateActivity(req.params.id , req.body ,userId);
     if (!activity) {
       return res.status(404).json({
         message: "activity not found",
@@ -81,7 +82,8 @@ const updateActivityController = async (req, res, next) => {
 
 const deleteActivityController = async (req ,res , next) => {
   try {
-    const activity = deletActivity(req.params.id)
+    const userId = req.user._id;
+    const activity = deletActivity(req.params.id ,userId)
     console.log("PARAMS:", req.params);
     console.log("ID:", req.params.id);
     if (!activity) {
