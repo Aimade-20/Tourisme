@@ -4,6 +4,7 @@ const authRoutes = require("../src/routes/authRouter");
 const activityRouter = require("../src/routes/activitydRouter.js");
 const reservationRouter = require("../src/routes/reservationRouter.js");
 const reviewRouter = require("../src/routes/reviewRouter.js");
+const categoryRouter = require("../src/routes/categoryRouter.js")
 const app = express();
 
 // Middleware
@@ -14,6 +15,7 @@ app.use("/auth", authRoutes);
 app.use("/", activityRouter);
 app.use("/activitys", reservationRouter);
 app.use("/activitys", reviewRouter);
+app.use("/categories", categoryRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "done" });

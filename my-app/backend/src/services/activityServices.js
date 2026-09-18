@@ -6,15 +6,12 @@ const createActivity = async (data, userId) => {
 };
 
 const getAllActivity = async () => {
-  const activitys = await Activitys.find().populate("guide", "name email role");
+  const activitys = await Activitys.find().populate("guide", "name email role").populate("category", "name image");
   return activitys;
 };
 
 const getActivityById = async (_id) => {
-  const activity = await Activitys.findById(_id).populate(
-    "guide",
-    "name email role",
-  );
+  const activity = await Activitys.findById(_id).populate("guide","name email role").populate("category", "name image");
   // console.log("id", _id);
   // console.log("servis activity", activity);
 

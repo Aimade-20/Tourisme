@@ -27,16 +27,9 @@ const activitySchema = new mongoose.Schema(
     },
 
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref : "Category",
       required: true,
-      enum: [
-        "Adventure",
-        "Culture",
-        "Sport",
-        "Nature",
-        "Food",
-        "Entertainment",
-      ],
     },
 
     date: {

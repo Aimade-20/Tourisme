@@ -1,6 +1,6 @@
 const createCatogory = require("../services/categoryServices");
 
-const createCatogory = async (req, res) => {
+const createCatogoryController = async (req, res) => {
   try {
     const name = req.body.name;
     const image = req.file.path;
@@ -17,4 +17,4 @@ const createCatogory = async (req, res) => {
   }
 };
 
-module.exports = createCatogory
+module.exports = createCatogoryController
