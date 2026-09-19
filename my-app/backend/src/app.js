@@ -15,7 +15,7 @@ app.use("/auth", authRoutes);
 app.use("/", activityRouter);
 app.use("/activitys", reservationRouter);
 app.use("/activitys", reviewRouter);
-app.use("/categories", categoryRouter);
+app.use("/", categoryRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "done" });

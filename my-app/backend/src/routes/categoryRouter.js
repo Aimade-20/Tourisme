@@ -1,21 +1,38 @@
-const express = require("express")
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 
+const {
+  createCatogoryController,
+  getAllCategoryController,
+  updateCategoryController,
+  deleteCategoryController
+} = require("../controllers/categoryController");
 
-const createCatogoryController = require ("../controllers/categoryController")
+const categoryValidation = require("../validation/categoryValidation");
 
-const categoryValidation = require("../validation/categoryValidation")
-
-const authMiddleware = require("../middlewares/authMiddleware")
-const adminMiddleware = require("../middlewares/adminMiddleware")
-const upload = require("../middlewares/uploadMiddleware")
+const authMiddleware = require("../middlewares/authMiddleware");
+const adminMiddleware = require("../middlewares/adminMiddleware");
+// const upload = require("../middlewares/uploadMiddleware")
 
 router.post(
-    "/",
-    authMiddleware,
-    adminMiddleware,
-    upload.single("image"),
-    categoryValidation,
-    createCatogoryController
+  "/categories",
+  authMiddleware,
+  adminMiddleware,
+  // upload.single("image"),
+  categoryValidation,
+  createCatogoryController,
 );
-module.exports = router
+router.get("/categories", getAllCategoryController);
+router.patch(
+  "/categories/:id",
+  authMiddleware,
+  adminMiddleware,
+  updateCategoryController,
+);
+router.delete(
+  "/categories/:id",
+  authMiddleware,
+  adminMiddleware,
+  deleteCategoryController,
+);
+module.exports = router;

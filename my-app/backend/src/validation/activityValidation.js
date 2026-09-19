@@ -15,29 +15,16 @@ const activityValidation = [
     .isLength({ min: 10, max: 1000 })
     .withMessage("Description must be between 10 and 1000 characters"),
 
-  body("city")
-    .trim()
-    .notEmpty()
-    .withMessage("City is required"),
+  body("city").trim().notEmpty().withMessage("City is required"),
 
-  body("location")
-    .trim()
-    .notEmpty()
-    .withMessage("Location is required"),
+  body("location").trim().notEmpty().withMessage("Location is required"),
 
   body("category")
     .trim()
     .notEmpty()
     .withMessage("Category is required")
-    .isIn([
-      "Adventure",
-      "Culture",
-      "Sport",
-      "Nature",
-      "Food",
-      "Entertainment",
-    ])
-    .withMessage("Invalid category"),
+    .isMongoId()
+    .withMessage("Invalid category ID"),
 
   body("date")
     .notEmpty()
@@ -69,10 +56,7 @@ const activityValidation = [
     .isInt({ min: 0 })
     .withMessage("Available places cannot be negative"),
 
-  body("images")
-    .optional()
-    .isArray()
-    .withMessage("Images must be an array"),
+  body("images").optional().isArray().withMessage("Images must be an array"),
 
   body("images.*")
     .optional()
@@ -80,4 +64,4 @@ const activityValidation = [
     .withMessage("Each image must be a string"),
 ];
 
-module.exports=activityValidation
+module.exports = activityValidation;
