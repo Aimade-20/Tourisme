@@ -1,7 +1,22 @@
 const Activitys = require("../models/ActivitySchema");
 
 const createActivity = async (data, userId) => {
-  const newActivity = await Activitys.create({ ...data, guide: userId });
+  const newActivity = await Activitys.create({
+    ...data,
+    guide: userId
+  });
+
+  await newActivity.populate([
+    {
+      path: "guide",
+      select: "name email role"
+    },
+    {
+      path: "category",
+      select: "name image"
+    }
+  ]);
+
   return newActivity;
 };
 

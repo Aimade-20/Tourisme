@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 
 const authRoutes = require("../src/routes/authRouter");
 const activityRouter = require("../src/routes/activitydRouter.js");
@@ -6,8 +7,10 @@ const reservationRouter = require("../src/routes/reservationRouter.js");
 const reviewRouter = require("../src/routes/reviewRouter.js");
 const categoryRouter = require("../src/routes/categoryRouter.js")
 const adminRouter = require("../src/routes/adminRouter.js")
-const app = express();
 
+
+const app = express();
+app.use(cors());
 // Middleware
 app.use(express.json());
 
