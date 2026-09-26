@@ -5,6 +5,7 @@ const {
   createReservationController,
   cancellationController,
   getReservationsByGuideController,
+  getMyReservationsController,
 } = require("../controllers/reservationController");
 
 const reservationsValidation = require("../validation/reservationValidation");
@@ -26,5 +27,11 @@ router.get(
   "/reservations/guide",
   authMiddleware,
   getReservationsByGuideController,
+);
+
+router.get(
+  "/reservations/me",
+  authMiddleware,
+  getMyReservationsController
 );
 module.exports = router;

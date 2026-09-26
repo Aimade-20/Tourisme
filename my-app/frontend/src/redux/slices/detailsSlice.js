@@ -1,5 +1,6 @@
 import {createSlice,createAsyncThunk,} from "@reduxjs/toolkit";
-import axios from "axios";
+// import axios from "axios";
+import api from "../../services/axios";
 
 
 
@@ -14,7 +15,7 @@ export const getActivityById = createAsyncThunk(
 
     async(id ,{rejectWithValue}) =>{
       try {
-        const response = await axios.get(`http://localhost:3000/activitys/${id}`)
+        const response = await api.get(`/activitys/${id}`)
         console.log("response.data =", response.data);
         console.log("activitys from response =", response.data.activitys);
         return response.data.activitys

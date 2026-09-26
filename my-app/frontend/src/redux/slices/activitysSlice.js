@@ -11,6 +11,7 @@ export const getActivitys = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/activitys");
+console.log("response slice" ,response.data);
 
       return response.data;
     } catch (error) {

@@ -9,6 +9,7 @@ import RihlaHeader from "./components/Header";
 import HomePage from "./pages/HomePage";
 import ActivityDetails from "./pages/ActivityDetails";
 import Auth from "./pages/Auth "
+import ReservationPage from "./pages/ReservationPage"
 
 function AppContent() {
   const location = useLocation();
@@ -30,6 +31,10 @@ function AppContent() {
         <Route
           path="/auth"
           element={<Auth />}
+        />
+        <Route
+          path="/activitys/reservations/me"
+          element={<ReservationPage />}
         />
       </Routes>
     </>

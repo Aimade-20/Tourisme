@@ -176,6 +176,7 @@ export default function ActivitysAndFilter() {
                         boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
                       },
                     }}
+                    onClick={() => navigate(`/activities/${activity._id}`)}
                   >
                     <Box
                       sx={{

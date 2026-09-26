@@ -65,4 +65,29 @@ const getReservationsByGuide = async ( userId) => {
   return guideReservations
 };
 
-module.exports = { createReservation, cancellation, getReservationsByGuide };
+
+const getReservationsByUser = async (userId) => {
+  const reservations = await Reservation.find({
+    user: userId,
+  }).populate({
+    path: "activity",
+    populate: [
+      {
+        path: "guide",
+        select: "name email",
+      },
+      {
+        path: "category",
+        select: "name image",
+      },
+    ],
+  });
+
+  if (reservations.length === 0) {
+    throw new Error("You do not have any reservations.");
+  }
+
+  return reservations;
+};
+
+module.exports = { createReservation, cancellation, getReservationsByGuide ,getReservationsByUser};

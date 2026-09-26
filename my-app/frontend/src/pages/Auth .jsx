@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import {
   Box,
@@ -12,15 +13,24 @@ import {
 import CheckIcon from "@mui/icons-material/Check";
 
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../redux/slices/authSlice";
+import { registerUser, loginUser } from "../redux/slices/authSlice";
 
 export default function Auth() {
+  const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+
+  const redirect = searchParams.get("redirect");
+
   const [isLogin, setIsLogin] = useState(false);
 
   const dispatch = useDispatch();
 
   const { loading } = useSelector((state) => state.auth);
 
+  // =========================
+  // Form Data
+  // =========================
 
   const [formData, setFormData] = useState({
     name: "",
@@ -28,6 +38,9 @@ export default function Auth() {
     password: "",
   });
 
+  // =========================
+  // Form Errors
+  // =========================
 
   const [formErrors, setFormErrors] = useState({
     name: "",
@@ -35,8 +48,11 @@ export default function Auth() {
     password: "",
   });
 
-  const [success, setSuccess] = useState(false);
+  // =========================
+  // Success
+  // =========================
 
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     if (!success) return;
@@ -48,76 +64,94 @@ export default function Auth() {
     return () => clearTimeout(timer);
   }, [success]);
 
+  // =========================
+  // Handle Input Change
+  // =========================
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-
-    setFormData((prev) => ({
-      ...prev,
+    setFormData({
+      ...formData,
       [name]: value,
-    }));
+    });
 
-
-    setFormErrors((prev) => ({
-      ...prev,
+    setFormErrors({
+      ...formErrors,
       [name]: "",
-    }));
-
-
-    setSuccess(false);
+    });
   };
 
+  // =========================
+  // Register
+  // =========================
 
   const handleRegister = async () => {
-
     setFormErrors({
       name: "",
       email: "",
       password: "",
     });
 
-
     setSuccess(false);
 
-
-    const errors = {};
-
-    // if (!formData.name.trim()) {
-    //   errors.name = "Name is required";
-    // }
-
-    // if (!formData.email.trim()) {
-    //   errors.email = "Email is required";
-    // }
-
-    // if (!formData.password.trim()) {
-    //   errors.password = "Password is required";
-    // }
-
-
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-
-
     try {
-      await dispatch(registerUser(formData)).unwrap();
-
+      const result = await dispatch(registerUser(formData)).unwrap();
 
       console.log("Register successful");
 
-      setSuccess(true);
-
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-      });
+      if (redirect) {
+        navigate(redirect);
+      } else {
+        navigate("/");
+      }
+      localStorage.setItem("token", result.token);
     } catch (error) {
-
       console.log("Backend error:", error);
+
+      if (error?.error) {
+        const { message, field } = error.error;
+
+        setFormErrors({
+          name: "",
+          email: "",
+          password: "",
+          [field]: message,
+        });
+      }
+    }
+  };
+
+  // =========================
+  // Login
+  // =========================
+
+  const handleLogin = async () => {
+    setFormErrors({
+      name: "",
+      email: "",
+      password: "",
+    });
+
+    try {
+      const result = await dispatch(
+        loginUser({
+          email: formData.email,
+          password: formData.password,
+        }),
+      ).unwrap();
+
+      console.log("Login successful");
+
+      if (redirect) {
+        navigate(redirect);
+      } else {
+        navigate("/");
+      }
+      localStorage.setItem("token", result.token);
+    } catch (error) {
+      console.log("Login error:", error);
+
       if (error?.error) {
         const { message, field } = error.error;
 
@@ -156,7 +190,9 @@ export default function Auth() {
           boxSizing: "border-box",
         }}
       >
-
+        {/* ================================================= */}
+        {/* REGISTER */}
+        {/* ================================================= */}
 
         <Box
           sx={{
@@ -181,6 +217,7 @@ export default function Auth() {
           }}
         >
           {/* Logo */}
+
           <Typography
             variant="h4"
             fontWeight={100}
@@ -192,6 +229,7 @@ export default function Auth() {
           </Typography>
 
           {/* Title */}
+
           <Typography
             variant="h5"
             fontWeight={600}
@@ -202,7 +240,7 @@ export default function Auth() {
             Create your account
           </Typography>
 
-
+          {/* Success */}
 
           {success && (
             <Alert
@@ -218,6 +256,7 @@ export default function Auth() {
             </Alert>
           )}
 
+          {/* Name */}
 
           <TextField
             name="name"
@@ -232,7 +271,7 @@ export default function Auth() {
             }}
           />
 
-
+          {/* Email */}
 
           <TextField
             name="email"
@@ -248,7 +287,7 @@ export default function Auth() {
             }}
           />
 
-
+          {/* Password */}
 
           <TextField
             name="password"
@@ -264,7 +303,7 @@ export default function Auth() {
             }}
           />
 
-
+          {/* Register Button */}
 
           <Button
             variant="contained"
@@ -285,7 +324,7 @@ export default function Auth() {
             {loading ? "Creating..." : "Create account"}
           </Button>
 
-
+          {/* Go Login */}
 
           <Typography
             sx={{
@@ -295,7 +334,15 @@ export default function Auth() {
           >
             Already have an account?{" "}
             <Button
-              onClick={() => setIsLogin(true)}
+              onClick={() => {
+                setIsLogin(true);
+
+                setFormErrors({
+                  name: "",
+                  email: "",
+                  password: "",
+                });
+              }}
               sx={{
                 color: "#2e7d32",
                 fontWeight: 700,
@@ -309,6 +356,9 @@ export default function Auth() {
           </Typography>
         </Box>
 
+        {/* ================================================= */}
+        {/* LOGIN */}
+        {/* ================================================= */}
 
         <Box
           sx={{
@@ -332,7 +382,7 @@ export default function Auth() {
             pointerEvents: isLogin ? "auto" : "none",
           }}
         >
-
+          {/* Logo */}
 
           <Typography
             variant="h4"
@@ -345,7 +395,7 @@ export default function Auth() {
             Rihla
           </Typography>
 
-
+          {/* Title */}
 
           <Typography
             variant="h5"
@@ -358,9 +408,10 @@ export default function Auth() {
             Welcome back
           </Typography>
 
-
+          {/* Email */}
 
           <TextField
+            name="email"
             label="Email"
             type="email"
             sx={{
@@ -368,10 +419,16 @@ export default function Auth() {
               mb: 2,
               width: 350,
             }}
+            value={formData.email}
+            onChange={handleChange}
+            error={Boolean(formErrors.email)}
+            helperText={formErrors.email}
           />
 
+          {/* Password */}
 
           <TextField
+            name="password"
             label="Password"
             type="password"
             sx={{
@@ -379,9 +436,13 @@ export default function Auth() {
               width: 350,
               ml: 9,
             }}
+            value={formData.password}
+            onChange={handleChange}
+            error={Boolean(formErrors.password)}
+            helperText={formErrors.password}
           />
 
-
+          {/* Login Button */}
 
           <Button
             variant="contained"
@@ -396,11 +457,13 @@ export default function Auth() {
               width: 350,
               ml: 9,
             }}
+            onClick={handleLogin}
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </Button>
 
-
+          {/* Go Register */}
 
           <Typography
             sx={{
@@ -410,7 +473,15 @@ export default function Auth() {
           >
             Don't have an account?{" "}
             <Button
-              onClick={() => setIsLogin(false)}
+              onClick={() => {
+                setIsLogin(false);
+
+                setFormErrors({
+                  name: "",
+                  email: "",
+                  password: "",
+                });
+              }}
               sx={{
                 color: "#2e7d32",
                 fontWeight: 700,
@@ -424,7 +495,9 @@ export default function Auth() {
           </Typography>
         </Box>
 
-
+        {/* ================================================= */}
+        {/* GREEN PANEL */}
+        {/* ================================================= */}
 
         <Box
           sx={{

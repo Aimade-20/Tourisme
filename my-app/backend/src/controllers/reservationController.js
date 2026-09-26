@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator");
 
-const {createReservation , cancellation, getReservationsByGuide} = require("../services/reservationServices")
+const {createReservation , cancellation, getReservationsByGuide ,getReservationsByUser} = require("../services/reservationServices")
 
 
 const createReservationController = async (req , res , next) => {
@@ -59,4 +59,23 @@ const getReservationsByGuideController = async (req ,res ,next) => {
         next(error)
     }
 }
-module.exports= {createReservationController ,cancellationController,getReservationsByGuideController}
+
+const getMyReservationsController = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const reservations =
+      await getReservationsByUser(userId);
+
+    return res.status(200).json({
+      message: "Reservations retrieved successfully",
+      reservations,
+    });
+
+  } catch (error) {
+    return res.status(404).json({
+      message: error.message,
+    });
+  }
+};
+module.exports= {createReservationController ,cancellationController,getReservationsByGuideController ,getMyReservationsController}
