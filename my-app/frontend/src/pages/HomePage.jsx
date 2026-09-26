@@ -17,15 +17,36 @@ import {
 
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getActivitys } from "../redux/slices/activitysSlice";
 import { useNavigate } from "react-router-dom";
+import api from "../services/axios";
 
 export default function ActivitysAndFilter() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedPrice, setselectedPrice] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+
+  const [categorys, setCategories] = useState([]);
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await api.get("/categories");
+        // console.log("response.data =", response.data);
+        // console.log("categories from response =", response.data.categorys);
+        setCategories(response.data.categorys || []);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getCategories();
+  }, []);
 
   const { activities, loading, error } = useSelector(
     (state) => state.activitys,
@@ -55,6 +76,14 @@ export default function ActivitysAndFilter() {
       </Container>
     );
   }
+  const filteredActivities = activities.filter((activity) => {
+    return (
+      (!selectedCity || activity.city.toLowerCase().includes(selectedCity.toLowerCase())) &&
+      (!selectedCategory || activity.category.name === selectedCategory) &&
+      (!selectedPrice || activity.price <= Number(selectedPrice)) &&
+      (!selectedDate || activity.date.startsWith(selectedDate))
+    );
+  });
 
   return (
     <Box
@@ -114,7 +143,7 @@ export default function ActivitysAndFilter() {
               </Typography>
 
               <Chip
-                label={`${activities.length} activities`}
+                label={`${filteredActivities.length} activities`}
                 sx={{
                   bgcolor: "#E3EFE9",
                   color: "#173F35",
@@ -124,7 +153,7 @@ export default function ActivitysAndFilter() {
             </Box>
 
             <Grid container spacing={3}>
-              {activities.map((activity) => (
+              {filteredActivities.map((activity) => (
                 <Grid
                   key={activity._id}
                   size={{
@@ -160,7 +189,17 @@ export default function ActivitysAndFilter() {
                         color: "#527064",
                       }}
                     >
-                      <Typography>Activity image</Typography>
+                      <Box
+                        component="img"
+                        src={activity.category.image}
+                        alt={activity.category.name}
+                        sx={{
+                          width: "100%",
+                          height: 182,
+                          objectFit: "cover",
+                          borderRadius: 3,
+                        }}
+                      />
                     </Box>
 
                     <CardContent
@@ -298,7 +337,7 @@ export default function ActivitysAndFilter() {
               >
                 Find the activity that suits you.
               </Typography>
-
+              {/* filter  */}
               <Stack spacing={2.5}>
                 <TextField
                   fullWidth
@@ -306,6 +345,8 @@ export default function ActivitysAndFilter() {
                   placeholder="e.g. Beni Mellal"
                   variant="outlined"
                   size="small"
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
                 />
 
                 <TextField
@@ -314,21 +355,17 @@ export default function ActivitysAndFilter() {
                   label="Category"
                   variant="outlined"
                   size="small"
+                  value={selectedCategory}
                   defaultValue=""
+                  onChange={(e) => setSelectedCategory(e.target.value)}
                 >
                   <MenuItem value="">All categories</MenuItem>
 
-                  <MenuItem value="Adventure">Adventure</MenuItem>
-
-                  <MenuItem value="Culture">Culture</MenuItem>
-
-                  <MenuItem value="Sport">Sport</MenuItem>
-
-                  <MenuItem value="Nature">Nature</MenuItem>
-
-                  <MenuItem value="Food">Food</MenuItem>
-
-                  <MenuItem value="Entertainment">Entertainment</MenuItem>
+                  {categorys.map((category) => (
+                    <MenuItem key={category._id} value={category.name}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
                 </TextField>
 
                 <TextField
@@ -338,6 +375,8 @@ export default function ActivitysAndFilter() {
                   placeholder="300"
                   variant="outlined"
                   size="small"
+                  value={selectedPrice}
+                  onChange={(e) => setselectedPrice(e.target.value)}
                 />
 
                 <TextField
@@ -349,45 +388,9 @@ export default function ActivitysAndFilter() {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
                 />
-
-                <TextField
-                  select
-                  fullWidth
-                  label="Rating"
-                  variant="outlined"
-                  size="small"
-                  defaultValue=""
-                >
-                  <MenuItem value="">All ratings</MenuItem>
-
-                  <MenuItem value="5">★★★★★</MenuItem>
-
-                  <MenuItem value="4">★★★★ and above</MenuItem>
-
-                  <MenuItem value="3">★★★ and above</MenuItem>
-                </TextField>
-
-                <Divider />
-
-                <Button
-                  fullWidth
-                  variant="contained"
-                  disableElevation
-                  sx={{
-                    bgcolor: "#173F35",
-                    py: 1.3,
-                    borderRadius: 2,
-                    textTransform: "none",
-                    fontWeight: 600,
-
-                    "&:hover": {
-                      bgcolor: "#0E2F27",
-                    },
-                  }}
-                >
-                  Apply filters
-                </Button>
               </Stack>
             </Paper>
           </Grid>

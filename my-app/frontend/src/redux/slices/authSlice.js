@@ -5,7 +5,7 @@ import {
 
 import api from "../../services/axios";
 
-// Register request
+
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
 
@@ -20,7 +20,7 @@ export const registerUser = createAsyncThunk(
 
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
+        error.response?.data ||
         "Something went wrong"
       );
     }
@@ -28,7 +28,7 @@ export const registerUser = createAsyncThunk(
 );
 
 
-// Initial state
+
 const initialState = {
   user: null,
   token: null,
@@ -38,7 +38,7 @@ const initialState = {
 };
 
 
-// Slice
+
 const authSlice = createSlice({
   name: "auth",
 
@@ -59,13 +59,12 @@ const authSlice = createSlice({
 
     builder
 
-      // Request started
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
 
-      // Request succeeded
+
       .addCase(
         registerUser.fulfilled,
         (state, action) => {
@@ -82,7 +81,7 @@ const authSlice = createSlice({
         }
       )
 
-      // Request failed
+
       .addCase(
         registerUser.rejected,
         (state, action) => {

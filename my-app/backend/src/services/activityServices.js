@@ -27,9 +27,6 @@ const getAllActivity = async () => {
 
 const getActivityById = async (_id) => {
   const activity = await Activitys.findById(_id).populate("guide","name email role").populate("category", "name image");
-  // console.log("id", _id);
-  // console.log("servis activity", activity);
-
   return activity;
 };
 
@@ -90,12 +87,7 @@ const getActivitiesFilter = async (filters) => {
       $lte: Number(filters.maxPrice),
     };
   }
-
-  const activities = await Activitys.find(query).populate(
-    "guide",
-    "name email role",
-  );
-
+  const activities = await Activitys.find(query).populate( "guide","name email role", ).populate("category", "name image");
   return activities;
 };
 

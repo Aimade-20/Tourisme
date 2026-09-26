@@ -4,7 +4,7 @@ import axios from "axios";
 
 
 const initialState = {
-  activity : null,
+  activitys : null,
   loading : false ,
   error : null
 }
@@ -15,7 +15,10 @@ export const getActivityById = createAsyncThunk(
     async(id ,{rejectWithValue}) =>{
       try {
         const response = await axios.get(`http://localhost:3000/activitys/${id}`)
-        return response.data
+        console.log("response.data =", response.data);
+        console.log("activitys from response =", response.data.activitys);
+        return response.data.activitys
+        
       } catch (error) {
         return rejectWithValue(
           error.response?.data?.message || "Failed to get activitie"
@@ -38,7 +41,7 @@ const activiryByIdSlice = createSlice({
     })
     .addCase(getActivityById.fulfilled,(state ,action) => {
       state.loading = false
-      state.activity = action.payload.activity
+      state.activitys = action.payload
       state.error=null
     })
         .addCase(getActivityById.rejected,(state ,action) => {
