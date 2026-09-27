@@ -33,11 +33,15 @@ const cancellation = async (reservationId, userId) => {
     throw new Error("This reservation has already been cancelled");
   }
   reservation.status = "cancelled";
-  // save in mongoDb
+
   await reservation.save();
 
   const activity = await Activitys.findById(reservation.activity);
-  activity.availablePlaces += reservation.numberOfPlaces;
+  if (activity) {
+    activity.availablePlaces += reservation.numberOfPlaces;
+    await activity.save();
+  }
+  return reservation;
 };
 
 const getReservationsByGuide = async ( userId) => {

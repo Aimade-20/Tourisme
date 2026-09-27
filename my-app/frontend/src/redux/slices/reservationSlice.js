@@ -42,6 +42,24 @@ export const getMyreservation = createAsyncThunk(
   },
 );
 
+export const cancelReservation = createAsyncThunk(
+  "reservation/cancelReservation",
+
+  async (reservationId, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(
+        `/activitys/reservations/${reservationId}/cancel`,
+      );
+
+      return response.data.reservation;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to cancel reservation",
+      );
+    }
+  },
+);
+
 const reservationSlice = createSlice({
   name: "reservation",
 
@@ -61,7 +79,7 @@ const reservationSlice = createSlice({
         state.loading = false;
         state.currentReservation = action.payload;
         state.error = null;
-      }) 
+      })
 
       .addCase(createReservation.rejected, (state, action) => {
         state.loading = false;
@@ -80,6 +98,28 @@ const reservationSlice = createSlice({
       .addCase(getMyreservation.rejected, (state, action) => {
         state.loading = false;
         state.reservation = [];
+        state.error = action.payload;
+      })
+      .addCase(cancelReservation.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(cancelReservation.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+
+        const updatedReservation = action.payload;
+
+        state.reservation = state.reservation.map((reservation) =>
+          reservation._id === updatedReservation._id
+            ? updatedReservation
+            : reservation,
+        );
+      })
+
+      .addCase(cancelReservation.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },

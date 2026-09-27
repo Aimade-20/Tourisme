@@ -24,52 +24,21 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 export default function DetailsActivitys() {
   const { id } = useParams();
-
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
-
-  // =========================
-  // Activity state
-  // =========================
-
   const {
     activitys,
     loading,
     error,
   } = useSelector((state) => state.activity);
-
-  // =========================
-  // Auth state
-  // =========================
-
   const { isAuthenticated } = useSelector(
     (state) => state.auth
   );
-
-  // =========================
-  // Number of places
-  // =========================
-
   const [numberOfPlaces, setNumberOfPlaces] = useState(1);
-
-  // =========================
-  // Success message
-  // =========================
-
   const [success, setSuccess] = useState(false);
-
-  // =========================
-  // Get activity
-  // =========================
-
   useEffect(() => {
     dispatch(getActivityById(id));
   }, [dispatch, id]);
-
-  // =========================
-  // Hide success message
-  // =========================
 
   useEffect(() => {
     if (!success) return;
@@ -81,16 +50,9 @@ export default function DetailsActivitys() {
     return () => clearTimeout(timer);
   }, [success]);
 
-  // =========================
-  // Debug
-  // =========================
 
   console.log("activity:", activitys);
   console.log("isAuthenticated:", isAuthenticated);
-
-  // =========================
-  // Loading
-  // =========================
 
   if (loading) {
     return (
@@ -107,9 +69,7 @@ export default function DetailsActivitys() {
     );
   }
 
-  // =========================
-  // Error
-  // =========================
+
 
   if (error) {
     return (
@@ -121,9 +81,6 @@ export default function DetailsActivitys() {
     );
   }
 
-  // =========================
-  // Activity not found
-  // =========================
 
   if (!activitys) {
     return (
@@ -135,59 +92,39 @@ export default function DetailsActivitys() {
     );
   }
 
-  // =========================
-  // Reservation
-  // =========================
 
   const handleReservation = async () => {
-    // User not authenticated
-    if (!isAuthenticated) {
-      navigate(
-        `/auth?redirect=/activities/${id}`
-      );
+  if (!isAuthenticated) {
+    navigate(`/auth?redirect=/activities/${id}`);
+    return;
+  }
 
-      return;
-    }
 
-    // Invalid number
-    if (
-      numberOfPlaces < 1 ||
-      numberOfPlaces > activitys.availablePlaces
-    ) {
-      return;
-    }
+  if (
+    numberOfPlaces < 1 ||
+    numberOfPlaces > activitys.availablePlaces
+  ) {
+    return;
+  }
 
-    try {
-      const result = await dispatch(
-        createReservation({
-          activityId: id,
-          numberOfPlaces: numberOfPlaces,
-        })
-      ).unwrap();
+  try {
+    const result = await dispatch(
+      createReservation({
+        activityId: id,
+        numberOfPlaces: numberOfPlaces,
+      })
+    ).unwrap();
 
-      console.log(
-        "Reservation created:",
-        result
-      );
+    console.log("Reservation created:", result);
 
-      // Show success message
-      setSuccess(true);
+    setSuccess(true);
+    setNumberOfPlaces(1);
 
-      // Reset number of places
-      setNumberOfPlaces(1);
-
-      // Update available places locally
-      // if backend returned the updated activity
-      // this can be replaced later by refetching
-      dispatch(getActivityById(id));
-
-    } catch (error) {
-      console.log(
-        "Reservation error:",
-        error
-      );
-    }
-  };
+    dispatch(getActivityById(id));
+  } catch (error) {
+    console.log("Reservation error:", error);
+  }
+};
 
   return (
     <Container

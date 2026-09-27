@@ -91,6 +91,16 @@ const getActivitiesFilter = async (filters) => {
   return activities;
 };
 
+const getActivitiesByGuide = async (guideId) => {
+  const activities = await Activitys.find({
+    guide: guideId,
+  })
+    .populate("guide", "name email role")
+    .populate("category", "name image");
+
+  return activities;
+};
+
 module.exports = {
   createActivity,
   getAllActivity,
@@ -98,4 +108,5 @@ module.exports = {
   updateActivity,
   deletActivity,
   getActivitiesFilter,
+  getActivitiesByGuide
 };

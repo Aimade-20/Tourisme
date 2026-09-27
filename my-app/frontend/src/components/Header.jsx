@@ -7,7 +7,7 @@ import {
   Stack,
 } from "@mui/material";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { logout } from "../redux/slices/authSlice";
@@ -15,6 +15,10 @@ import { logout } from "../redux/slices/authSlice";
 export default function RihlaHeader() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
   const handleLogout = () => {
     dispatch(logout());
@@ -46,6 +50,7 @@ export default function RihlaHeader() {
               fontWeight: 700,
               color: "#135d46",
               letterSpacing: "-0.5px",
+              cursor: "pointer",
             }}
             onClick={() => navigate("/")}
           >
@@ -58,8 +63,10 @@ export default function RihlaHeader() {
             spacing={4}
             alignItems="center"
           >
+            {/* Activities */}
             <Button
               disableRipple
+              onClick={() => navigate("/")}
               sx={{
                 textTransform: "none",
                 fontSize: "1rem",
@@ -74,58 +81,71 @@ export default function RihlaHeader() {
               Activities
             </Button>
 
-            <Button
-              disableRipple
-              sx={{
-                textTransform: "none",
-                fontSize: "1rem",
-                color: "#6c757d",
-                "&:hover": {
-                  bgcolor: "transparent",
-                  color: "#1d2a23",
-                },
-              }}
-              onClick={() => navigate("")}
-            >
-              Reservations
-            </Button>
+            {/* Only authenticated users */}
+            {isAuthenticated && (
+              <>
+                {/* Reservations */}
+                <Button
+                  disableRipple
+                  onClick={() =>
+                    navigate("/activitys/reservations/me")
+                  }
+                  sx={{
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    color: "#6c757d",
+                    "&:hover": {
+                      bgcolor: "transparent",
+                      color: "#1d2a23",
+                    },
+                  }}
+                >
+                  Reservations
+                </Button>
+                {/* Logout */}
+                <Button
+                  variant="outlined"
+                  onClick={handleLogout}
+                  sx={{
+                    textTransform: "none",
+                    fontSize: "0.95rem",
+                    fontWeight: 600,
+                    color: "#135d46",
+                    borderColor: "#135d46",
+                    borderRadius: 2,
 
-            <Button
-              disableRipple
-              sx={{
-                textTransform: "none",
-                fontSize: "1rem",
-                color: "#6c757d",
-                "&:hover": {
-                  bgcolor: "transparent",
-                  color: "#1d2a23",
-                },
-              }}
-            >
-              Profile
-            </Button>
+                    "&:hover": {
+                      bgcolor: "#135d46",
+                      color: "#ffffff",
+                      borderColor: "#135d46",
+                    },
+                  }}
+                >
+                  Logout
+                </Button>
+              </>
+            )}
 
-            {/* Logout */}
-            <Button
-              variant="outlined"
-              onClick={handleLogout}
-              sx={{
-                textTransform: "none",
-                fontSize: "0.95rem",
-                fontWeight: 600,
-                color: "#135d46",
-                borderColor: "#135d46",
-                borderRadius: 2,
-
-                "&:hover": {
+            {/* Login for guests */}
+            {!isAuthenticated && (
+              <Button
+                variant="contained"
+                onClick={() => navigate("/auth")}
+                sx={{
+                  textTransform: "none",
+                  fontSize: "0.95rem",
+                  fontWeight: 600,
                   bgcolor: "#135d46",
-                  color: "#ffffff",
-                  borderColor: "#135d46",
-                },
-              }}
-            >
-              Logout
-            </Button>
+                  borderRadius: 2,
+
+                  "&:hover": {
+                    bgcolor: "#0e4937",
+                  },
+                }}
+              >
+                Login
+              </Button>
+            )}
           </Stack>
         </Toolbar>
       </Container>

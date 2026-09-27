@@ -5,7 +5,8 @@ const {
   getActivityById,
   updateActivity,
   deletActivity,
-  getActivitiesFilter
+  getActivitiesFilter,
+  getActivitiesByGuide
 } = require("../services/activityServices");
 
 const createActivityController = async (req, res, next) => {
@@ -116,11 +117,29 @@ const getActivitiesController = async (req, res, next) => {
     }
 };
 
+
+const getActivitiesByGuideController = async (req, res, next) => {
+  try {
+    const guideId = req.user._id;
+
+    const activities = await getActivitiesByGuide(guideId);
+
+    return res.status(200).json({
+      message: "Guide activities retrieved successfully",
+      activities,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 module.exports = {
   createActivityController,
   getAllActivityController,
   getActivityByIdController,
   updateActivityController,
   deleteActivityController,
-  getActivitiesController
+  getActivitiesController,
+  getActivitiesByGuideController
 };

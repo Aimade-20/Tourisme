@@ -24,7 +24,6 @@ const registerUser = async (req, res) => {
       user: result.user,
       token: result.token,
     });
-
   } catch (error) {
     return res.status(400).json({
       error: {
@@ -46,8 +45,14 @@ const loginUser = async (req, res) => {
 
     return res.status(200).json({
       token: result.token,
+      user: {
+        _id: result.user._id,
+        name: result.user.name,
+        email: result.user.email,
+        role: result.user.role,
+        isApproved: result.user.isApproved,
+      },
     });
-
   } catch (error) {
     return res.status(401).json({
       error: {

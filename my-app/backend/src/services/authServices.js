@@ -13,10 +13,7 @@ const register = async (data) => {
     throw error;
   }
 
-  const hashPassWord = await bcrypt.hash(
-    data.password,
-    10
-  );
+  const hashPassWord = await bcrypt.hash(data.password, 10);
 
   const user = await User.create({
     ...data,
@@ -32,7 +29,7 @@ const register = async (data) => {
     process.env.JWT_SECRET,
     {
       expiresIn: "4d",
-    }
+    },
   );
 
   return {
@@ -50,10 +47,7 @@ const login = async ({ email, password }) => {
     throw error;
   }
 
-  const isMatch = await bcrypt.compare(
-    password,
-    user.password
-  );
+  const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
     const error = new Error("Invalid email or password");
@@ -70,11 +64,18 @@ const login = async ({ email, password }) => {
     process.env.JWT_SECRET,
     {
       expiresIn: "4d",
-    }
+    },
   );
 
   return {
     token,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isApproved: user.isApproved,
+    },
   };
 };
 

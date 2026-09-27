@@ -28,29 +28,17 @@ export default function Auth() {
 
   const { loading } = useSelector((state) => state.auth);
 
-  // =========================
-  // Form Data
-  // =========================
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
-  // =========================
-  // Form Errors
-  // =========================
-
   const [formErrors, setFormErrors] = useState({
     name: "",
     email: "",
     password: "",
   });
-
-  // =========================
-  // Success
-  // =========================
 
   const [success, setSuccess] = useState(false);
 
@@ -63,10 +51,6 @@ export default function Auth() {
 
     return () => clearTimeout(timer);
   }, [success]);
-
-  // =========================
-  // Handle Input Change
-  // =========================
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -81,10 +65,6 @@ export default function Auth() {
       [name]: "",
     });
   };
-
-  // =========================
-  // Register
-  // =========================
 
   const handleRegister = async () => {
     setFormErrors({
@@ -122,10 +102,6 @@ export default function Auth() {
     }
   };
 
-  // =========================
-  // Login
-  // =========================
-
   const handleLogin = async () => {
     setFormErrors({
       name: "",
@@ -141,14 +117,22 @@ export default function Auth() {
         }),
       ).unwrap();
 
-      console.log("Login successful");
+      console.log("LOGIN RESULT:", result);
+      console.log("USER ROLE:", result.user?.role);
 
+      // Guide
+      if (result.user?.role === "guide") {
+        navigate("/guide/activities");
+        return;
+      }
+
+      // Normal user
       if (redirect) {
         navigate(redirect);
-      } else {
-        navigate("/");
+        return;
       }
-      localStorage.setItem("token", result.token);
+
+      navigate("/");
     } catch (error) {
       console.log("Login error:", error);
 
