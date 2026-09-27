@@ -6,7 +6,7 @@ const {
   updateActivity,
   deletActivity,
   getActivitiesFilter,
-  getActivitiesByGuide
+  getActivitiesByGuide,
 } = require("../services/activityServices");
 
 const createActivityController = async (req, res, next) => {
@@ -17,9 +17,9 @@ const createActivityController = async (req, res, next) => {
     }
     const activity = await createActivity(req.body, req.user._id);
     return res.status(201).json({
-      message: "activity created successfully",
+      message: "Activity created successfully",
       activityId: activity._id,
-      Activity: activity,
+      activity: activity,
     });
   } catch (error) {
     console.log(error);
@@ -65,15 +65,18 @@ const getActivityByIdController = async (req, res, next) => {
 const updateActivityController = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const activity = await updateActivity(req.params.id , req.body ,userId);
+
+    const activity = await updateActivity(req.params.id, req.body, userId);
+
     if (!activity) {
       return res.status(404).json({
         message: "activity not found",
       });
     }
-    return res.status(201).json({
-      message: "successfully",
-      activitys: activity,
+
+    return res.status(200).json({
+      message: "Activity updated successfully",
+      activity: activity,
     });
   } catch (error) {
     console.log(error);
@@ -81,42 +84,39 @@ const updateActivityController = async (req, res, next) => {
   }
 };
 
-const deleteActivityController = async (req ,res , next) => {
+const deleteActivityController = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const activity = deletActivity(req.params.id ,userId)
+    const activity = deletActivity(req.params.id, userId);
     console.log("PARAMS:", req.params);
     console.log("ID:", req.params.id);
     if (!activity) {
       return res.status(404).json({
-        message : "activity not found"
-      })
+        message: "activity not found",
+      });
     }
     return res.status(201).json({
-      message : "activity delete successfully"
-    })
+      message: "activity delete successfully",
+    });
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
-}
-
-
-const getActivitiesController = async (req, res, next) => {
-    try {
-      // console.log("QUERY:", req.query);
-        const activities = await getActivitiesFilter(req.query);
-
-        return res.status(200).json({
-            message: "Activities retrieved successfully",
-            activities
-        });
-
-    } catch (error) {
-        next(error);
-    }
 };
 
+const getActivitiesController = async (req, res, next) => {
+  try {
+    // console.log("QUERY:", req.query);
+    const activities = await getActivitiesFilter(req.query);
+
+    return res.status(200).json({
+      message: "Activities retrieved successfully",
+      activities,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getActivitiesByGuideController = async (req, res, next) => {
   try {
@@ -141,5 +141,5 @@ module.exports = {
   updateActivityController,
   deleteActivityController,
   getActivitiesController,
-  getActivitiesByGuideController
+  getActivitiesByGuideController,
 };

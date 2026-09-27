@@ -265,8 +265,7 @@ export default function GuideActivities() {
                   component="img"
                   height="210"
                   image={
-                    activity.image ||
-                    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b"
+                    activity.category.image 
                   }
                   alt={activity.title}
                 />

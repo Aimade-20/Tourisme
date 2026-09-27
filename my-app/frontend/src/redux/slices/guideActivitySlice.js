@@ -1,7 +1,4 @@
-import {
-  createSlice,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import api from "../../services/axios";
 
@@ -11,25 +8,24 @@ export const getMyActivities = createAsyncThunk(
   "guideActivity/getMyActivities",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get(
-        "/activitys/guide/my"
-      );
+      const response = await api.get("/activitys/guide/my");
 
       return response.data.activities;
-
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-        "Failed to get your activities"
+        error.response?.data || {
+          message: "Failed to get your activities",
+        },
       );
     }
-  }
+  },
 );
 
 // ================= CREATE ACTIVITY =================
 
 export const createGuideActivity = createAsyncThunk(
   "guideActivity/create",
+
   async (activityData, { rejectWithValue }) => {
     try {
       const response = await api.post(
@@ -37,12 +33,15 @@ export const createGuideActivity = createAsyncThunk(
         activityData
       );
 
+      console.log("CREATE RESPONSE:", response.data);
+
       return response.data.activity;
 
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-        "Failed to create activity"
+        error.response?.data || {
+          message: "Failed to create activity",
+        }
       );
     }
   }
@@ -54,20 +53,21 @@ export const updateGuideActivity = createAsyncThunk(
   "guideActivity/update",
   async ({ id, activityData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(
-        `/activitys/${id}`,
-        activityData
-      );
+      const response = await api.put(`/activitys/${id}`, activityData);
 
-      return response.data.activity;
+      console.log("UPDATE RESPONSE:", response.data);
 
+      return response.data;
     } catch (error) {
+      console.log("UPDATE ERROR:", error.response?.data);
+
       return rejectWithValue(
-        error.response?.data?.message ||
-        "Failed to update activity"
+        error.response?.data || {
+          message: "Failed to update activity",
+        },
       );
     }
-  }
+  },
 );
 
 // ================= DELETE ACTIVITY =================
@@ -79,14 +79,14 @@ export const deleteGuideActivity = createAsyncThunk(
       await api.delete(`/activitys/${id}`);
 
       return id;
-
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-        "Failed to delete activity"
+        error.response?.data || {
+          message: "Failed to delete activity",
+        },
       );
     }
-  }
+  },
 );
 
 // ================= INITIAL STATE =================
@@ -94,7 +94,6 @@ export const deleteGuideActivity = createAsyncThunk(
 const initialState = {
   activities: [],
   currentActivity: null,
-
   loading: false,
   error: null,
 };
@@ -113,7 +112,6 @@ const guideActivitySlice = createSlice({
   },
 
   extraReducers: (builder) => {
-
     // ================= GET =================
 
     builder
@@ -143,7 +141,7 @@ const guideActivitySlice = createSlice({
       .addCase(createGuideActivity.fulfilled, (state, action) => {
         state.loading = false;
 
-        state.activities.unshift(action.payload);
+        state.activities.push(action.payload);
       })
 
       .addCase(createGuideActivity.rejected, (state, action) => {
@@ -162,11 +160,8 @@ const guideActivitySlice = createSlice({
       .addCase(updateGuideActivity.fulfilled, (state, action) => {
         state.loading = false;
 
-        state.activities = state.activities.map(
-          (activity) =>
-            activity._id === action.payload._id
-              ? action.payload
-              : activity
+        state.activities = state.activities.map((activity) =>
+          activity._id === action.payload._id ? action.payload : activity,
         );
       })
 
@@ -187,8 +182,7 @@ const guideActivitySlice = createSlice({
         state.loading = false;
 
         state.activities = state.activities.filter(
-          (activity) =>
-            activity._id !== action.payload
+          (activity) => activity._id !== action.payload,
         );
       })
 
@@ -199,8 +193,6 @@ const guideActivitySlice = createSlice({
   },
 });
 
-export const {
-  clearGuideActivityError,
-} = guideActivitySlice.actions;
+export const { clearGuideActivityError } = guideActivitySlice.actions;
 
 export default guideActivitySlice.reducer;

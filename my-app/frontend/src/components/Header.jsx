@@ -1,22 +1,21 @@
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   AppBar,
   Toolbar,
   Typography,
-  Container,
   Button,
-  Stack,
+  Box,
 } from "@mui/material";
-
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 import { logout } from "../redux/slices/authSlice";
 
-export default function RihlaHeader() {
-  const dispatch = useDispatch();
+export default function Header() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { isAuthenticated } = useSelector(
+  const { isAuthenticated, user } = useSelector(
     (state) => state.auth
   );
 
@@ -28,127 +27,140 @@ export default function RihlaHeader() {
   return (
     <AppBar
       position="static"
-      color="transparent"
       elevation={0}
       sx={{
-        bgcolor: "#ffffff",
-        borderBottom: "1px solid #eaeaea",
+        bgcolor: "#FFFFFF",
+        color: "#1D2A23",
+        borderBottom: "1px solid #E8E8E8",
       }}
     >
-      <Container maxWidth="lg">
-        <Toolbar
-          disableGutters
+      <Toolbar
+        sx={{
+          maxWidth: 1200,
+          width: "100%",
+          mx: "auto",
+        }}
+      >
+        {/* Logo */}
+        <Typography
+          variant="h5"
           sx={{
-            justifyContent: "space-between",
-            minHeight: "60px",
+            fontWeight: 800,
+            color: "#135D46",
+            cursor: "pointer",
           }}
+          onClick={() => navigate("/")}
         >
-          {/* Logo */}
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 700,
-              color: "#135d46",
-              letterSpacing: "-0.5px",
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/")}
-          >
-            Rihla
-          </Typography>
+          Rihla
+        </Typography>
 
-          {/* Navigation */}
-          <Stack
-            direction="row"
-            spacing={4}
-            alignItems="center"
-          >
-            {/* Activities */}
+        <Box sx={{ flexGrow: 1 }} />
+
+        {/* ================= GUEST ================= */}
+        {!isAuthenticated && (
+          <>
             <Button
-              disableRipple
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/activitys")}
               sx={{
+                color: "#1D2A23",
                 textTransform: "none",
-                fontSize: "1rem",
-                fontWeight: 500,
-                color: "#1d2a23",
-                "&:hover": {
-                  bgcolor: "transparent",
-                  color: "#135d46",
-                },
               }}
             >
               Activities
             </Button>
 
-            {/* Only authenticated users */}
-            {isAuthenticated && (
-              <>
-                {/* Reservations */}
-                <Button
-                  disableRipple
-                  onClick={() =>
-                    navigate("/activitys/reservations/me")
-                  }
-                  sx={{
-                    textTransform: "none",
-                    fontSize: "1rem",
-                    color: "#6c757d",
-                    "&:hover": {
-                      bgcolor: "transparent",
-                      color: "#1d2a23",
-                    },
-                  }}
-                >
-                  Reservations
-                </Button>
-                {/* Logout */}
-                <Button
-                  variant="outlined"
-                  onClick={handleLogout}
-                  sx={{
-                    textTransform: "none",
-                    fontSize: "0.95rem",
-                    fontWeight: 600,
-                    color: "#135d46",
-                    borderColor: "#135d46",
-                    borderRadius: 2,
+            <Button
+              variant="contained"
+              onClick={() => navigate("/auth")}
+              sx={{
+                ml: 2,
+                bgcolor: "#135D46",
+                textTransform: "none",
+                "&:hover": {
+                  bgcolor: "#0E4937",
+                },
+              }}
+            >
+              Login
+            </Button>
+          </>
+        )}
 
-                    "&:hover": {
-                      bgcolor: "#135d46",
-                      color: "#ffffff",
-                      borderColor: "#135d46",
-                    },
-                  }}
-                >
-                  Logout
-                </Button>
-              </>
-            )}
+        {/* ================= USER ================= */}
+        {isAuthenticated && user?.role === "user" && (
+          <>
+            <Button
+              onClick={() => navigate("/activitys")}
+              sx={{
+                color: "#1D2A23",
+                textTransform: "none",
+              }}
+            >
+              Activities
+            </Button>
 
-            {/* Login for guests */}
-            {!isAuthenticated && (
-              <Button
-                variant="contained"
-                onClick={() => navigate("/auth")}
-                sx={{
-                  textTransform: "none",
-                  fontSize: "0.95rem",
-                  fontWeight: 600,
-                  bgcolor: "#135d46",
-                  borderRadius: 2,
+            <Button
+              onClick={() =>
+                navigate("/activitys/reservations/me")
+              }
+              sx={{
+                color: "#1D2A23",
+                textTransform: "none",
+              }}
+            >
+              My Reservations
+            </Button>
 
-                  "&:hover": {
-                    bgcolor: "#0e4937",
-                  },
-                }}
-              >
-                Login
-              </Button>
-            )}
-          </Stack>
-        </Toolbar>
-      </Container>
+            <Button
+              onClick={handleLogout}
+              sx={{
+                ml: 1,
+                color: "#D32F2F",
+                textTransform: "none",
+              }}
+            >
+              Logout
+            </Button>
+          </>
+        )}
+
+        {/* ================= GUIDE ================= */}
+        {isAuthenticated && user?.role === "guide" && (
+          <>
+            <Button
+              onClick={() => navigate("/activitys")}
+              sx={{
+                color: "#1D2A23",
+                textTransform: "none",
+              }}
+            >
+              Activities
+            </Button>
+
+            <Button
+              onClick={() => navigate("/guide/activities")}
+              sx={{
+                color: "#135D46",
+                textTransform: "none",
+                fontWeight: 600,
+              }}
+            >
+              My Activities
+            </Button>
+
+            <Button
+              onClick={handleLogout}
+              sx={{
+                ml: 1,
+                color: "#D32F2F",
+                textTransform: "none",
+              }}
+            >
+              Logout
+            </Button>
+          </>
+        )}
+      </Toolbar>
     </AppBar>
   );
 }

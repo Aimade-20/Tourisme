@@ -37,8 +37,6 @@ export default function ActivitysAndFilter() {
     const getCategories = async () => {
       try {
         const response = await api.get("/categories");
-        // console.log("response.data =", response.data);
-        // console.log("categories from response =", response.data.categorys);
         setCategories(response.data.categorys || []);
       } catch (error) {
         console.log(error);

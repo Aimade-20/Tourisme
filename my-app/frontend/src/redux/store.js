@@ -5,12 +5,15 @@ import activitysReducer from "./slices/activitysSlice"
 import detailsActivityReducer from "./slices/detailsSlice"
 import resrvationReducer from "./slices/reservationSlice"
 import guideActivityReducer from "./slices/guideActivitySlice";
-export const store = configureStore ({
+import createActivityReducer from "./slices/activitysSlice"
+ const store = configureStore ({
     reducer : {
         auth : authReducer,
         activitys : activitysReducer,
         activity : detailsActivityReducer,
         reservation : resrvationReducer,
          guideActivity: guideActivityReducer,
+         createActivitys : createActivityReducer,
     }
 })
+export default store;

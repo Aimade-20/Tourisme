@@ -50,12 +50,6 @@ const activityValidation = [
     .isInt({ min: 1 })
     .withMessage("Maximum participants must be at least 1"),
 
-  body("availablePlaces")
-    .notEmpty()
-    .withMessage("Available places is required")
-    .isInt({ min: 0 })
-    .withMessage("Available places cannot be negative"),
-
   body("images").optional().isArray().withMessage("Images must be an array"),
 
   body("images.*")

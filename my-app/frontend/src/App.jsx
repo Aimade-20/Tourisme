@@ -1,49 +1,88 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
-import RihlaHeader from "./components/Header";
-import HomePage from "./pages/HomePage";
-import ActivityDetails from "./pages/ActivityDetails";
+import Header from "./components/Header";
+
+import Home from "./pages/HomePage";
 import Auth from "./pages/Auth";
+import ActivityDetails from "./pages/ActivityDetails";
+
 import ReservationPage from "./pages/ReservationPage";
+
+import GuideActivities from "./pages/GuideActivities";
+import FormCreateActivity from "./pages/FormCreateActivity";
+
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuideRoute from "./components/GuideRoute";
-import GuideActivities from "./pages/GuideActivities";
 
-function AppContent() {
+function App() {
   const location = useLocation();
 
-  const hideHeader = location.pathname === "/auth";
+  const hideHeader =
+    location.pathname === "/auth" ||
+    location.pathname.startsWith("/guide");
 
   return (
     <>
-      {!hideHeader && <RihlaHeader />}
+      {!hideHeader && <Header />}
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
 
-        <Route path="/activities/:id" element={<ActivityDetails />} />
+        {/* ================= PUBLIC ================= */}
 
-        <Route path="/auth" element={<Auth />} />
+        <Route path="/" element={<Home />} />
+
+        <Route
+          path="/activitys"
+          element={<Home />}
+        />
+
+        <Route
+          path="/activitys/:id"
+          element={<ActivityDetails />}
+        />
+
+        <Route
+          path="/auth"
+          element={<Auth />}
+        />
+
+        {/* ================= USER ================= */}
 
         <Route element={<ProtectedRoute />}>
+                  <Route
+            path="/activities/:id"
+            element={<ActivityDetails />}
+          />
           <Route
             path="/activitys/reservations/me"
             element={<ReservationPage />}
           />
         </Route>
+
+        {/* ================= GUIDE ================= */}
+
         <Route element={<GuideRoute />}>
-          <Route path="/guide/activities" element={<GuideActivities />} />
+
+          <Route
+            path="/guide/activities"
+            element={<GuideActivities />}
+          />
+
+          <Route
+            path="/guide/activities/create"
+            element={<FormCreateActivity />}
+          />
+
+           <Route
+            path="/guide/activities/edit/:id"
+            element={<FormCreateActivity />}
+          /> 
+
         </Route>
+
       </Routes>
     </>
-  );
-}
-
-function App() {
-  return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
   );
 }
 

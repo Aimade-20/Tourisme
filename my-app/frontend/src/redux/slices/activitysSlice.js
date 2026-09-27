@@ -1,7 +1,4 @@
-import {
-  createSlice,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import api from "../../services/axios";
 
@@ -11,21 +8,23 @@ export const getActivitys = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/activitys");
-console.log("response slice" ,response.data);
+      console.log("response slice", response.data);
 
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-        "Failed to get activities"
+        error.response?.data?.message || "Failed to get activities",
       );
     }
-  }
+  },
 );
+
+
 
 const initialState = {
   activities: [],
   loading: false,
+  creating: false,
   error: null,
 };
 
@@ -50,9 +49,9 @@ const activitySlice = createSlice({
 
       .addCase(getActivitys.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
-      });
-  },
+        state.error = action.payload.activities;
+      }) 
+    },
 });
 
 export default activitySlice.reducer;
