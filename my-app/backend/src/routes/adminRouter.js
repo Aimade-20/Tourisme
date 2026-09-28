@@ -8,6 +8,8 @@ const {
   getAllUserController,
   getAllActivitiesController,
   getAllReservationsController,
+  updateGuideController,
+  deleteGuideController,
 } = require("../controllers/adminController");
 
 const guideValidation = require("../validation/guideValidation");
@@ -29,6 +31,9 @@ router.patch(
   adminMiddleware,
   approveGuidevController,
 );
+router.put("/guides/:id", authMiddleware, adminMiddleware, updateGuide);
+
+router.delete("/guides/:id", authMiddleware, adminMiddleware, deleteGuide);
 router.get("/users", authMiddleware, adminMiddleware, getAllUserController);
 router.get(
   "/activities",
@@ -41,6 +46,6 @@ router.get(
   "/reservations",
   authMiddleware,
   adminMiddleware,
-  getAllReservationsController
+  getAllReservationsController,
 );
 module.exports = router;

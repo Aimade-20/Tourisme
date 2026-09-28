@@ -4,7 +4,9 @@ const {
   approveGuide,
   getAllUser,
   getAllActivities,
-  getAllReservations
+  getAllReservations,
+  updateGuide,
+  deleteGuide
 } = require("../services/adminServices");
 const { validationResult } = require("express-validator");
 
@@ -49,6 +51,38 @@ const approveGuidevController = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     next(error);
+  }
+};
+
+const updateGuideController = async (req, res) => {
+  try {
+    const guide = await adminServices.updateGuide(
+      req.params.id,
+      req.body
+    );
+
+    res.status(200).json({
+      message: "Guide updated successfully",
+      guide,
+    });
+  } catch (error) {
+    res.status(404).json({
+      message: error.message,
+    });
+  }
+};
+
+const deleteGuideController = async (req, res) => {
+  try {
+    const result = await adminServices.deleteGuide(
+      req.params.id
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(404).json({
+      message: error.message,
+    });
   }
 };
 
@@ -99,5 +133,7 @@ module.exports = {
   approveGuidevController,
   getAllUserController,
   getAllActivitiesController,
-  getAllReservationsController
+  getAllReservationsController,
+  updateGuideController,
+  deleteGuideController,
 };

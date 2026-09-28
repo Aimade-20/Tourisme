@@ -41,8 +41,53 @@ const approveGuide = async (guidId) => {
   return guide;
 };
 
+const updateGuide = async (guideId, data) => {
+  const guide = await User.findOne({
+    _id: guideId,
+    role: "guide",
+  });
+
+  if (!guide) {
+    throw new Error("Guide not found");
+  }
+
+  // fields that admin is allowed to update
+  if (data.name !== undefined) {
+    guide.name = data.name;
+  }
+
+  if (data.email !== undefined) {
+    guide.email = data.email;
+  }
+
+  if (data.isApproved !== undefined) {
+    guide.isApproved = data.isApproved;
+  }
+
+  await guide.save();
+
+  return guide;
+};
+
+const deleteGuide = async (guideId) => {
+  const guide = await User.findOne({
+    _id: guideId,
+    role: "guide",
+  });
+
+  if (!guide) {
+    throw new Error("Guide not found");
+  }
+
+  await User.findByIdAndDelete(guideId);
+
+  return {
+    message: "Guide deleted successfully",
+  };
+};
+
 const getAllUser = async () => {
-  const users = await User.find({ role:  "user"}).select("-password");
+  const users = await User.find({ role: "user" }).select("-password");
   return users;
 };
 
@@ -52,12 +97,19 @@ const getAllActivities = async () => {
   return activities;
 };
 
-
-
 const getAllReservations = async () => {
   const reservations = await Reservation.find();
 
   return reservations;
 };
 
-module.exports = { createGuide, getAllGuide, approveGuide, getAllUser ,getAllActivities ,getAllReservations };
+module.exports = {
+  createGuide,
+  getAllGuide,
+  approveGuide,
+  getAllUser,
+  getAllActivities,
+  getAllReservations,
+  updateGuide,
+  deleteGuide,
+};
