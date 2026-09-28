@@ -1,13 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Box,
-} from "@mui/material";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 
 import { logout } from "../redux/slices/authSlice";
 
@@ -15,9 +9,7 @@ export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isAuthenticated, user } = useSelector(
-    (state) => state.auth
-  );
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -100,9 +92,7 @@ export default function Header() {
             </Button>
 
             <Button
-              onClick={() =>
-                navigate("/activitys/reservations/me")
-              }
+              onClick={() => navigate("/activitys/reservations/me")}
               sx={{
                 color: "#1D2A23",
                 textTransform: "none",
@@ -151,7 +141,50 @@ export default function Header() {
             <Button
               onClick={handleLogout}
               sx={{
-                ml: 1,
+                mr: 5,
+                color: "#D32F2F",
+                textTransform: "none",
+              }}
+            >
+              Logout
+            </Button>
+          </>
+        )}
+         {/* ================= admin ================= */}
+        {isAuthenticated && user?.role === "admin" && (
+          <>
+            <Button
+              onClick={() => navigate("/activitys")}
+              sx={{
+                color: "#1D2A23",
+                textTransform: "none",
+              }}
+            >
+              Activities
+            </Button>
+
+            <Button
+              onClick={() => navigate("/activitys/reservations/me")}
+              sx={{
+                color: "#1D2A23",
+                textTransform: "none",
+              }}
+            >
+              My Reservations
+            </Button>
+            <Button
+              onClick={() => navigate("/admin")}
+              sx={{
+                color: "#1D2A23",
+                textTransform: "none",
+              }}
+            >
+              admin
+            </Button>
+            <Button
+              onClick={handleLogout}
+              sx={{
+                mr: 5,
                 color: "#D32F2F",
                 textTransform: "none",
               }}

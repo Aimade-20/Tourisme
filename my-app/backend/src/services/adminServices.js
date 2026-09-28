@@ -42,7 +42,7 @@ const approveGuide = async (guidId) => {
 };
 
 const getAllUser = async () => {
-  const users = await User.find({ role: "user" }).select("-password");
+  const users = await User.find({ role:  "user"}).select("-password");
   return users;
 };
 

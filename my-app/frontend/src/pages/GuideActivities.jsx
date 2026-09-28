@@ -19,7 +19,7 @@ import {
 
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import PeopleIcon from "@mui/icons-material/People";
@@ -34,11 +34,9 @@ export default function GuideActivities() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {
-    activities,
-    loading,
-    error,
-  } = useSelector((state) => state.guideActivity);
+  const { activities, loading, error } = useSelector(
+    (state) => state.guideActivity,
+  );
 
   // ================= GET ACTIVITIES =================
 
@@ -50,14 +48,13 @@ export default function GuideActivities() {
 
   const handleDelete = async (id) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this activity?"
+      "Are you sure you want to delete this activity?",
     );
 
     if (!confirmed) return;
 
     try {
       await dispatch(deleteGuideActivity(id)).unwrap();
-
     } catch (error) {
       console.log("Delete activity error:", error);
     }
@@ -93,7 +90,6 @@ export default function GuideActivities() {
       }}
     >
       <Container maxWidth="lg">
-
         {/* ================= HEADER ================= */}
 
         <Box
@@ -128,9 +124,7 @@ export default function GuideActivities() {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            onClick={() =>
-              navigate("/guide/activities/create")
-            }
+            onClick={() => navigate("/guide/activities/create")}
             sx={{
               bgcolor: "#135D46",
               textTransform: "none",
@@ -207,16 +201,13 @@ export default function GuideActivities() {
                 mb: 3,
               }}
             >
-              Create your first activity and start
-              welcoming travelers.
+              Create your first activity and start welcoming travelers.
             </Typography>
 
             <Button
               variant="contained"
               startIcon={<AddIcon />}
-              onClick={() =>
-                navigate("/guide/activities/create")
-              }
+              onClick={() => navigate("/guide/activities/create")}
               sx={{
                 bgcolor: "#135D46",
                 textTransform: "none",
@@ -235,13 +226,7 @@ export default function GuideActivities() {
 
         <Grid container spacing={3}>
           {activities.map((activity) => (
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              md={4}
-              key={activity._id}
-            >
+            <Grid  sx={{ xs: 12, sm: 6, md: 4 }} key={activity._id}>
               <Card
                 elevation={0}
                 sx={{
@@ -253,25 +238,20 @@ export default function GuideActivities() {
                   transition: "0.2s",
                   "&:hover": {
                     transform: "translateY(-3px)",
-                    boxShadow:
-                      "0 8px 25px rgba(0,0,0,0.08)",
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
                   },
                 }}
               >
-
                 {/* IMAGE */}
 
                 <CardMedia
                   component="img"
                   height="210"
-                  image={
-                    activity.category.image 
-                  }
+                  image={activity.category.image}
                   alt={activity.title}
                 />
 
                 <CardContent sx={{ p: 3 }}>
-
                   {/* TITLE + CATEGORY */}
 
                   <Box sx={{ mb: 2 }}>
@@ -288,10 +268,7 @@ export default function GuideActivities() {
 
                     {activity.category && (
                       <Chip
-                        label={
-                          activity.category.name ||
-                          activity.category
-                        }
+                        label={activity.category.name || activity.category}
                         size="small"
                         sx={{
                           bgcolor: "#E8F3EF",
@@ -305,7 +282,6 @@ export default function GuideActivities() {
                   {/* INFO */}
 
                   <Stack spacing={1.2} sx={{ mb: 3 }}>
-
                     <Box
                       sx={{
                         display: "flex",
@@ -320,10 +296,7 @@ export default function GuideActivities() {
                         }}
                       />
 
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                      >
+                      <Typography variant="body2" color="text.secondary">
                         {activity.city}
                       </Typography>
                     </Box>
@@ -342,14 +315,9 @@ export default function GuideActivities() {
                         }}
                       />
 
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                      >
+                      <Typography variant="body2" color="text.secondary">
                         {activity.date
-                          ? new Date(
-                              activity.date
-                            ).toLocaleDateString()
+                          ? new Date(activity.date).toLocaleDateString()
                           : "No date"}
                       </Typography>
                     </Box>
@@ -368,10 +336,7 @@ export default function GuideActivities() {
                         }}
                       />
 
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                      >
+                      <Typography variant="body2" color="text.secondary">
                         {activity.duration} hours
                       </Typography>
                     </Box>
@@ -390,15 +355,10 @@ export default function GuideActivities() {
                         }}
                       />
 
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                      >
-                        {activity.availablePlaces} places
-                        available
+                      <Typography variant="body2" color="text.secondary">
+                        {activity.availablePlaces} places available
                       </Typography>
                     </Box>
-
                   </Stack>
 
                   {/* PRICE */}
@@ -416,18 +376,13 @@ export default function GuideActivities() {
 
                   {/* ACTIONS */}
 
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                  >
+                  <Stack direction="row" spacing={1}>
                     <Button
                       fullWidth
                       variant="outlined"
                       startIcon={<EditIcon />}
                       onClick={() =>
-                        navigate(
-                          `/guide/activities/edit/${activity._id}`
-                        )
+                        navigate(`/guide/activities/edit/${activity._id}`)
                       }
                       sx={{
                         textTransform: "none",
@@ -446,12 +401,8 @@ export default function GuideActivities() {
                       fullWidth
                       variant="outlined"
                       color="error"
-                      startIcon={
-                        <DeleteForeverIcon />
-                      }
-                      onClick={() =>
-                        handleDelete(activity._id)
-                      }
+                      startIcon={<DeleteForeverIcon />}
+                      onClick={() => handleDelete(activity._id)}
                       sx={{
                         textTransform: "none",
                       }}
@@ -459,13 +410,11 @@ export default function GuideActivities() {
                       Delete
                     </Button>
                   </Stack>
-
                 </CardContent>
               </Card>
             </Grid>
           ))}
         </Grid>
-
       </Container>
     </Box>
   );

@@ -66,7 +66,7 @@ const getAllUserController = async (req, res, next) => {
 };
 
 
-const getAllActivitiesController = async (req, res) => {
+const getAllActivitiesController = async (req, res,next) => {
   try {
     const activities = await getAllActivities();
 

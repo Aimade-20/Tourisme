@@ -12,13 +12,11 @@ const categoryValidation = require("../validation/categoryValidation");
 
 const authMiddleware = require("../middlewares/authMiddleware");
 const adminMiddleware = require("../middlewares/adminMiddleware");
-// const upload = require("../middlewares/uploadMiddleware")
 
 router.post(
   "/categories",
   authMiddleware,
   adminMiddleware,
-  // upload.single("image"),
   categoryValidation,
   createCatogoryController,
 );
