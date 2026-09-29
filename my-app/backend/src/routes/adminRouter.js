@@ -31,9 +31,9 @@ router.patch(
   adminMiddleware,
   approveGuidevController,
 );
-router.put("/guides/:id", authMiddleware, adminMiddleware, updateGuide);
+router.put("/guides/:id", authMiddleware, adminMiddleware, updateGuideController);
 
-router.delete("/guides/:id", authMiddleware, adminMiddleware, deleteGuide);
+router.delete("/guides/:id", authMiddleware, adminMiddleware, deleteGuideController);
 router.get("/users", authMiddleware, adminMiddleware, getAllUserController);
 router.get(
   "/activities",

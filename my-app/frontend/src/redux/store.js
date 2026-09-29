@@ -6,6 +6,7 @@ import detailsActivityReducer from "./slices/detailsSlice";
 import resrvationReducer from "./slices/reservationSlice";
 import guideActivityReducer from "./slices/guideActivitySlice";
 import createActivityReducer from "./slices/activitysSlice";
+import categoryReducer from "./slices/categorySlice";
 import adminReducer from "./slices/adminSlice";
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     guideActivity: guideActivityReducer,
     createActivitys: createActivityReducer,
     admin: adminReducer,
+     category: categoryReducer,
   },
 });
 export default store;

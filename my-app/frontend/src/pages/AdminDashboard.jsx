@@ -76,10 +76,10 @@ const AdminDashboard = () => {
         </Box>
 
         {/* Statistics */}
-        <Grid container spacing={3}>
+        <Grid container spacing={3} >
 
 
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={3} >
               <Card
                 elevation={0}
                 sx={{
@@ -501,7 +501,7 @@ const AdminDashboard = () => {
                   variant="contained"
                   onClick={() => navigate("/admin/guides/create")}
                   sx={{
-                    mt: 3,
+                    mt: 1.5,
                     backgroundColor: "#2e7d32",
                     textTransform: "none",
                     borderRadius: 2,

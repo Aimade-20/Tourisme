@@ -1,3 +1,5 @@
+import "./index.css";
+
 import { Routes, Route, useLocation } from "react-router-dom";
 
 import Header from "./components/Header";
@@ -10,12 +12,16 @@ import ReservationPage from "./pages/ReservationPage";
 
 import GuideActivities from "./pages/GuideActivities";
 import FormCreateActivity from "./pages/FormCreateActivity";
-import AdminDashboard from "./pages/AdminDashboard"
-import AllUsers from "./pages/AllUser"
+import AdminDashboard from "./pages/AdminDashboard";
+import AllUsers from "./pages/AllUser";
+import AllGuides from "./pages/AllGuidesPage";
+import AdminActivities from "./pages/AdminActivities"
+import AdminReservations from "./pages/AdminReservations" 
+import CategoriesPage from "./pages/CategoriesPage"
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuideRoute from "./components/GuideRoute";
-import AdminRouter from "./components/AdminRouter"
+import AdminRouter from "./components/AdminRouter";
 
 function App() {
   const location = useLocation();
@@ -66,22 +72,11 @@ function App() {
         {/* ================= admin ================= */}
         <Route element={<AdminRouter />}>
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route
-            path="/admin/users"
-            element={<AllUsers />}
-          />
-          <Route
-            path="/admin/guide"
-            element={<FormCreateActivity />}
-          />
-          <Route
-            path="/admin/activities"
-            element={<FormCreateActivity />}
-          />
-          <Route
-            path="/admin/reservations"
-            element={<FormCreateActivity />}
-          />
+          <Route path="/admin/users" element={<AllUsers />} />
+          <Route path="/admin/guides" element={<AllGuides />} />
+          <Route path="/admin/activities" element={<AdminActivities />} />
+          <Route path="/admin/reservations" element={<AdminReservations />} />
+          <Route path="/admin/categories" element={<CategoriesPage />} />
         </Route>
       </Routes>
     </>

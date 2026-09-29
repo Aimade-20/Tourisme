@@ -98,7 +98,16 @@ const getAllActivities = async () => {
 };
 
 const getAllReservations = async () => {
-  const reservations = await Reservation.find();
+  const reservations = await Reservation.find()
+    .populate("user", "name email")
+    .populate({
+      path: "activity",
+      select: "title description city location date duration price guide",
+      populate: {
+        path: "guide",
+        select: "name email",
+      },
+    });
 
   return reservations;
 };

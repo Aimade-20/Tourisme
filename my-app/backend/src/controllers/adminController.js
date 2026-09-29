@@ -54,9 +54,9 @@ const approveGuidevController = async (req, res, next) => {
   }
 };
 
-const updateGuideController = async (req, res) => {
+const updateGuideController = async (req, res, next) => {
   try {
-    const guide = await adminServices.updateGuide(
+    const guide = await updateGuide(
       req.params.id,
       req.body
     );
@@ -66,23 +66,24 @@ const updateGuideController = async (req, res) => {
       guide,
     });
   } catch (error) {
-    res.status(404).json({
-      message: error.message,
-    });
+    console.log(error);
+    next(error);
   }
 };
 
-const deleteGuideController = async (req, res) => {
+const deleteGuideController = async (req, res, next) => {
   try {
-    const result = await adminServices.deleteGuide(
+    const result = await deleteGuide(
       req.params.id
     );
 
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(404).json({
-      message: error.message,
+    res.status(200).json({
+      message: "Guide deleted successfully",
+      result,
     });
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };
 
