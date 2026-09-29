@@ -53,6 +53,8 @@ const ManageCategories = () => {
     loading,
     error,
   } = useSelector((state) => state.category);
+  console.log("categories page" ,categories.image);
+  
 
   // ================= LOCAL STATE =================
 

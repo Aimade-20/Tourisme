@@ -2,6 +2,22 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import api from "../../services/axios";
 
+// ================= post guide =================
+export const createGuide = createAsyncThunk(
+  "guide/createGuide",
+  async(dataGuide , {rejectWithValue}) =>{
+    try {
+      const response = await api.post("/admin/guides",dataGuide)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Failed to create guide"
+      );
+    }
+  }
+)
+
 // ================= GET USERS =================
 
 export const getAllUsers = createAsyncThunk(
@@ -123,6 +139,21 @@ const adminSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
+
+          .addCase(createGuide.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(createGuide.fulfilled, (state, action) => {
+        state.loading = false;
+        state.guides.push(action.payload.guides)
+      })
+
+      .addCase(createGuide.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
       // ================= USERS =================
 

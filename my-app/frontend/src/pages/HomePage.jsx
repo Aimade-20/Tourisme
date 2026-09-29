@@ -22,7 +22,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { getActivitys } from "../redux/slices/activitysSlice";
 import { useNavigate } from "react-router-dom";
-import api from "../services/axios";
+import {
+  getAllCategory,
+
+} from "../redux/slices/categorySlice";
 
 export default function ActivitysAndFilter() {
   const dispatch = useDispatch();
@@ -32,26 +35,19 @@ export default function ActivitysAndFilter() {
   const [selectedPrice, setselectedPrice] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
 
-  const [categorys, setCategories] = useState([]);
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const response = await api.get("/categories");
-        setCategories(response.data.categorys || []);
-      } catch (error) {
-        console.log(error);
-      }
-    };
 
-    getCategories();
-  }, []);
+
+  const {
+    categories = [],
+  } = useSelector((state) => state.category);
+  console.log("home page" ,categories);
 
   const { activities, loading, error } = useSelector(
     (state) => state.activitys,
   );
-
   useEffect(() => {
     dispatch(getActivitys());
+    dispatch(getAllCategory());
   }, [dispatch]);
   if (loading) {
     return (
@@ -76,7 +72,8 @@ export default function ActivitysAndFilter() {
   }
   const filteredActivities = activities.filter((activity) => {
     return (
-      (!selectedCity || activity.city.toLowerCase().includes(selectedCity.toLowerCase())) &&
+      (!selectedCity ||
+        activity.city.toLowerCase().includes(selectedCity.toLowerCase())) &&
       (!selectedCategory || activity.category.name === selectedCategory) &&
       (!selectedPrice || activity.price <= Number(selectedPrice)) &&
       (!selectedDate || activity.date.startsWith(selectedDate))
@@ -190,8 +187,8 @@ export default function ActivitysAndFilter() {
                     >
                       <Box
                         component="img"
-                        src={activity.category.image}
-                        alt={activity.category.name}
+                        src={activity.category?.image}
+                        alt={activity.category?.name}
                         sx={{
                           width: "100%",
                           height: 182,
@@ -360,7 +357,7 @@ export default function ActivitysAndFilter() {
                 >
                   <MenuItem value="">All categories</MenuItem>
 
-                  {categorys.map((category) => (
+                  {categories.map((category) => (
                     <MenuItem key={category._id} value={category.name}>
                       {category.name}
                     </MenuItem>

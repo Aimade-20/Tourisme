@@ -8,15 +8,13 @@ export const createCategory = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await api.post("/categories", data);
-
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to create category"
+        error.response?.data?.message || "Failed to create category",
       );
     }
-  }
+  },
 );
 
 // ================= GET ALL CATEGORIES =================
@@ -26,15 +24,14 @@ export const getAllCategory = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/categories");
-
+      console.log("CATEGORY API RESPONSE:", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to get categories"
+        error.response?.data?.message || "Failed to get categories",
       );
     }
-  }
+  },
 );
 
 // ================= UPDATE CATEGORY =================
@@ -43,19 +40,15 @@ export const updateCategory = createAsyncThunk(
   "category/updateCategory",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await api.patch(
-        `/categories/${id}`,
-        data
-      );
+      const response = await api.patch(`/categories/${id}`, data);
 
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to update category"
+        error.response?.data?.message || "Failed to update category",
       );
     }
-  }
+  },
 );
 
 // ================= DELETE CATEGORY =================
@@ -64,9 +57,7 @@ export const deleteCategory = createAsyncThunk(
   "category/deleteCategory",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await api.delete(
-        `/categories/${id}`
-      );
+      const response = await api.delete(`/categories/${id}`);
 
       return {
         id,
@@ -74,11 +65,10 @@ export const deleteCategory = createAsyncThunk(
       };
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to delete category"
+        error.response?.data?.message || "Failed to delete category",
       );
     }
-  }
+  },
 );
 
 // ================= INITIAL STATE =================
@@ -110,8 +100,7 @@ const categorySlice = createSlice({
       .addCase(getAllCategory.fulfilled, (state, action) => {
         state.loading = false;
 
-        state.categories =
-          action.payload.categorys || [];
+        state.categories = action.payload.categorys || [];
       })
 
       .addCase(getAllCategory.rejected, (state, action) => {
@@ -129,9 +118,7 @@ const categorySlice = createSlice({
       .addCase(createCategory.fulfilled, (state, action) => {
         state.loading = false;
 
-        state.categories.push(
-          action.payload.category
-        );
+        state.categories.push(action.payload.category);
       })
 
       .addCase(createCategory.rejected, (state, action) => {
@@ -149,14 +136,10 @@ const categorySlice = createSlice({
       .addCase(updateCategory.fulfilled, (state, action) => {
         state.loading = false;
 
-        const updatedCategory =
-          action.payload.newCategory;
+        const updatedCategory = action.payload.newCategory;
 
-        state.categories = state.categories.map(
-          (category) =>
-            category._id === updatedCategory._id
-              ? updatedCategory
-              : category
+        state.categories = state.categories.map((category) =>
+          category._id === updatedCategory._id ? updatedCategory : category,
         );
       })
 
@@ -176,8 +159,7 @@ const categorySlice = createSlice({
         state.loading = false;
 
         state.categories = state.categories.filter(
-          (category) =>
-            category._id !== action.payload.id
+          (category) => category._id !== action.payload.id,
         );
       })
 

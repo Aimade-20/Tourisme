@@ -18,6 +18,7 @@ import AllGuides from "./pages/AllGuidesPage";
 import AdminActivities from "./pages/AdminActivities"
 import AdminReservations from "./pages/AdminReservations" 
 import CategoriesPage from "./pages/CategoriesPage"
+import CreateGuidePage from "./pages/CreateGuidePage"
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuideRoute from "./components/GuideRoute";
@@ -77,6 +78,7 @@ function App() {
           <Route path="/admin/activities" element={<AdminActivities />} />
           <Route path="/admin/reservations" element={<AdminReservations />} />
           <Route path="/admin/categories" element={<CategoriesPage />} />
+          <Route path="/admin/guides/create" element={<CreateGuidePage />} />
         </Route>
       </Routes>
     </>
