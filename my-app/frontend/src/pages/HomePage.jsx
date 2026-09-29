@@ -74,7 +74,7 @@ export default function ActivitysAndFilter() {
     return (
       (!selectedCity ||
         activity.city.toLowerCase().includes(selectedCity.toLowerCase())) &&
-      (!selectedCategory || activity.category.name === selectedCategory) &&
+      (!selectedCategory || activity.category?.name === selectedCategory) &&
       (!selectedPrice || activity.price <= Number(selectedPrice)) &&
       (!selectedDate || activity.date.startsWith(selectedDate))
     );

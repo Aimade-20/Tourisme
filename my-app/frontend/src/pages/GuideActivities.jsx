@@ -247,7 +247,7 @@ export default function GuideActivities() {
                 <CardMedia
                   component="img"
                   height="210"
-                  image={activity.category.image}
+                  image={activity.category?.image}
                   alt={activity.title}
                 />
 

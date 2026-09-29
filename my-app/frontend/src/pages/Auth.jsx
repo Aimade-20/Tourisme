@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -17,31 +18,35 @@ import { registerUser, loginUser } from "../redux/slices/authSlice";
 
 export default function Auth() {
   const navigate = useNavigate();
-
   const [searchParams] = useSearchParams();
-
   const redirect = searchParams.get("redirect");
-
-  const [isLogin, setIsLogin] = useState(false);
 
   const dispatch = useDispatch();
 
   const { loading } = useSelector((state) => state.auth);
 
+  // Login / Register
+  const [isLogin, setIsLogin] = useState(false);
+
+  // Form data
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
+  // Form errors
   const [formErrors, setFormErrors] = useState({
     name: "",
     email: "",
     password: "",
+    general: "",
   });
 
+  // Success message
   const [success, setSuccess] = useState(false);
 
+  // Hide success after 3 seconds
   useEffect(() => {
     if (!success) return;
 
@@ -52,61 +57,82 @@ export default function Auth() {
     return () => clearTimeout(timer);
   }, [success]);
 
+  // =========================
+  // HANDLE INPUT
+  // =========================
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
 
-    setFormErrors({
-      ...formErrors,
+    // Clear error of current input
+    setFormErrors((prev) => ({
+      ...prev,
       [name]: "",
-    });
+      general: "",
+    }));
   };
+
+  // =========================
+  // REGISTER
+  // =========================
 
   const handleRegister = async () => {
     setFormErrors({
       name: "",
       email: "",
       password: "",
+      general: "",
     });
 
     setSuccess(false);
 
     try {
-      const result = await dispatch(registerUser(formData)).unwrap();
+      const result = await dispatch(
+        registerUser(formData)
+      ).unwrap();
 
-      console.log("Register successful");
+      console.log("REGISTER RESULT:", result);
 
-      if (redirect) {
-        navigate(redirect);
-      } else {
-        navigate("/");
+      // Save token before navigation
+      if (result.token) {
+        localStorage.setItem("token", result.token);
       }
-      localStorage.setItem("token", result.token);
-    } catch (error) {
-      console.log("Backend error:", error);
 
-      if (error?.error) {
-        const { message, field } = error.error;
+      setSuccess(true);
 
-        setFormErrors({
+      // After registration show login
+      setTimeout(() => {
+        setIsLogin(true);
+
+        setFormData({
           name: "",
-          email: "",
+          email: formData.email,
           password: "",
-          [field]: message,
         });
-      }
+      }, 1000);
+
+    } catch (error) {
+      console.log("REGISTER ERROR:", error);
+
+      handleBackendError(error);
     }
   };
+
+  // =========================
+  // LOGIN
+  // =========================
 
   const handleLogin = async () => {
     setFormErrors({
       name: "",
       email: "",
       password: "",
+      general: "",
     });
 
     try {
@@ -114,39 +140,133 @@ export default function Auth() {
         loginUser({
           email: formData.email,
           password: formData.password,
-        }),
+        })
       ).unwrap();
 
       console.log("LOGIN RESULT:", result);
       console.log("USER ROLE:", result.user?.role);
 
-      // Guide
+      // Save token
+      if (result.token) {
+        localStorage.setItem("token", result.token);
+      }
+
+      // =========================
+      // GUIDE
+      // =========================
+
       if (result.user?.role === "guide") {
         navigate("/guide/activities");
         return;
       }
 
-      // Normal user
+      // =========================
+      // NORMAL USER
+      // =========================
+
       if (redirect) {
         navigate(redirect);
         return;
       }
 
       navigate("/");
+
     } catch (error) {
-      console.log("Login error:", error);
+      console.log("LOGIN ERROR:", error);
 
-      if (error?.error) {
-        const { message, field } = error.error;
+      handleBackendError(error);
+    }
+  };
 
+  // =========================
+  // HANDLE BACKEND ERROR
+  // =========================
+
+  const handleBackendError = (error) => {
+    console.log("BACKEND ERROR:", error);
+
+    /*
+      Backend response example:
+
+      {
+        error: {
+          message: "Email already exists",
+          field: "email"
+        }
+      }
+    */
+
+    if (error?.error) {
+      const message = error.error.message;
+      const field = error.error.field;
+
+      // General error
+      if (field === "general") {
         setFormErrors({
           name: "",
           email: "",
           password: "",
+          general: message,
+        });
+
+        return;
+      }
+
+      // Input error
+      if (
+        field === "name" ||
+        field === "email" ||
+        field === "password"
+      ) {
+        setFormErrors({
+          name: "",
+          email: "",
+          password: "",
+          general: "",
           [field]: message,
         });
+
+        return;
       }
     }
+
+    // Unknown error
+    setFormErrors({
+      name: "",
+      email: "",
+      password: "",
+      general: "Something went wrong. Please try again.",
+    });
+  };
+
+  // =========================
+  // SHOW LOGIN
+  // =========================
+
+  const showLogin = () => {
+    setIsLogin(true);
+
+    setFormErrors({
+      name: "",
+      email: "",
+      password: "",
+      general: "",
+    });
+  };
+
+  // =========================
+  // SHOW REGISTER
+  // =========================
+
+  const showRegister = () => {
+    setIsLogin(false);
+
+    setFormErrors({
+      name: "",
+      email: "",
+      password: "",
+      general: "",
+    });
   };
 
   return (
@@ -174,9 +294,10 @@ export default function Auth() {
           boxSizing: "border-box",
         }}
       >
-        {/* ================================================= */}
+
+        {/* ========================================= */}
         {/* REGISTER */}
-        {/* ================================================= */}
+        {/* ========================================= */}
 
         <Box
           sx={{
@@ -195,9 +316,13 @@ export default function Auth() {
 
             opacity: isLogin ? 0 : 1,
 
-            transform: isLogin ? "translateX(-30px)" : "translateX(0)",
+            transform: isLogin
+              ? "translateX(-30px)"
+              : "translateX(0)",
 
-            pointerEvents: isLogin ? "none" : "auto",
+            pointerEvents: isLogin
+              ? "none"
+              : "auto",
           }}
         >
           {/* Logo */}
@@ -237,6 +362,20 @@ export default function Auth() {
               }}
             >
               Account created successfully!
+            </Alert>
+          )}
+
+          {/* General Register Error */}
+
+          {formErrors.general && (
+            <Alert
+              severity="error"
+              sx={{
+                width: 350,
+                mb: 2,
+              }}
+            >
+              {formErrors.general}
             </Alert>
           )}
 
@@ -317,16 +456,9 @@ export default function Auth() {
             }}
           >
             Already have an account?{" "}
-            <Button
-              onClick={() => {
-                setIsLogin(true);
 
-                setFormErrors({
-                  name: "",
-                  email: "",
-                  password: "",
-                });
-              }}
+            <Button
+              onClick={showLogin}
               sx={{
                 color: "#2e7d32",
                 fontWeight: 700,
@@ -340,9 +472,9 @@ export default function Auth() {
           </Typography>
         </Box>
 
-        {/* ================================================= */}
+        {/* ========================================= */}
         {/* LOGIN */}
-        {/* ================================================= */}
+        {/* ========================================= */}
 
         <Box
           sx={{
@@ -361,9 +493,13 @@ export default function Auth() {
 
             opacity: isLogin ? 1 : 0,
 
-            transform: isLogin ? "translateX(0)" : "translateX(30px)",
+            transform: isLogin
+              ? "translateX(0)"
+              : "translateX(30px)",
 
-            pointerEvents: isLogin ? "auto" : "none",
+            pointerEvents: isLogin
+              ? "auto"
+              : "none",
           }}
         >
           {/* Logo */}
@@ -391,6 +527,21 @@ export default function Auth() {
           >
             Welcome back
           </Typography>
+
+          {/* General Login Error */}
+
+          {formErrors.general && (
+            <Alert
+              severity="error"
+              sx={{
+                width: 350,
+                ml: 9,
+                mb: 2,
+              }}
+            >
+              {formErrors.general}
+            </Alert>
+          )}
 
           {/* Email */}
 
@@ -456,16 +607,9 @@ export default function Auth() {
             }}
           >
             Don't have an account?{" "}
-            <Button
-              onClick={() => {
-                setIsLogin(false);
 
-                setFormErrors({
-                  name: "",
-                  email: "",
-                  password: "",
-                });
-              }}
+            <Button
+              onClick={showRegister}
               sx={{
                 color: "#2e7d32",
                 fontWeight: 700,
@@ -479,9 +623,9 @@ export default function Auth() {
           </Typography>
         </Box>
 
-        {/* ================================================= */}
+        {/* ========================================= */}
         {/* GREEN PANEL */}
-        {/* ================================================= */}
+        {/* ========================================= */}
 
         <Box
           sx={{
@@ -512,8 +656,13 @@ export default function Auth() {
               px: 5,
             }}
           >
-            <Typography variant="h3" fontWeight={700}>
-              {isLogin ? "Welcome Back!" : "Join Rihla"}
+            <Typography
+              variant="h3"
+              fontWeight={700}
+            >
+              {isLogin
+                ? "Welcome Back!"
+                : "Join Rihla"}
             </Typography>
 
             <Typography
@@ -528,7 +677,9 @@ export default function Auth() {
             </Typography>
           </Box>
         </Box>
+
       </Paper>
     </Box>
   );
 }
+
