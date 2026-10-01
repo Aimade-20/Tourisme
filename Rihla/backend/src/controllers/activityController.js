@@ -87,7 +87,7 @@ const updateActivityController = async (req, res, next) => {
 const deleteActivityController = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const activity = deletActivity(req.params.id, userId);
+    const activity = await deletActivity(req.params.id, userId);
     console.log("PARAMS:", req.params);
     console.log("ID:", req.params.id);
     if (!activity) {

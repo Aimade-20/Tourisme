@@ -20,10 +20,10 @@ export const registerUser = createAsyncThunk(
             message: "Unable to connect to server",
             field: "general",
           },
-        }
+        },
       );
     }
-  }
+  },
 );
 
 // =========================
@@ -45,25 +45,27 @@ export const loginUser = createAsyncThunk(
             message: "Unable to connect to server",
             field: "general",
           },
-        }
+        },
       );
     }
-  }
+  },
 );
 
 // =========================
 // INITIAL STATE
 // =========================
-const initialState = {
-  user: null,
-  token: localStorage.getItem("token") || null,
+const savedUser = localStorage.getItem("user");
+const savedToken = localStorage.getItem("token");
 
-  isAuthenticated: !!localStorage.getItem("token"),
+const initialState = {
+  user: savedUser ? JSON.parse(savedUser) : null,
+  token: savedToken || null,
+
+  isAuthenticated: !!savedToken,
 
   loading: false,
   error: null,
 };
-
 // =========================
 // SLICE
 // =========================
@@ -104,6 +106,14 @@ const authSlice = createSlice({
         state.user = action.payload.user || null;
         state.token = action.payload.token || null;
         state.isAuthenticated = !!action.payload.token;
+
+        if (action.payload.token) {
+          localStorage.setItem("token", action.payload.token);
+        }
+
+        if (action.payload.user) {
+          localStorage.setItem("user", JSON.stringify(action.payload.user));
+        }
       })
 
       .addCase(registerUser.rejected, (state, action) => {
@@ -128,6 +138,9 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isAuthenticated = true;
+
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
 
       .addCase(loginUser.rejected, (state, action) => {

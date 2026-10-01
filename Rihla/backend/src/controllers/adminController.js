@@ -13,14 +13,19 @@ const { validationResult } = require("express-validator");
 const createGuideController = async (req, res, next) => {
   try {
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({
+        errors: errors.array(),
+      });
     }
+
     const guide = await createGuide(req.body);
-    res.status(201).json({
-      massage: "user created successfully",
+
+    return res.status(201).json({
+      message: "Guide created successfully",
       guideId: guide._id,
-      Guide: guide,
+      guide,
     });
   } catch (error) {
     console.log(error);

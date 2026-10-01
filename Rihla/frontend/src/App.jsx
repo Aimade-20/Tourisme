@@ -26,9 +26,9 @@ import AdminRouter from "./components/AdminRouter";
 
 function App() {
   const location = useLocation();
-
+console.log("APP PATH:", location.pathname);
+  console.log("HIDE HEADER:", location.pathname === "/auth");
   const hideHeader = location.pathname === "/auth";
-  // location.pathname.startsWith("/guide");
 
   return (
     <>

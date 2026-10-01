@@ -10,6 +10,9 @@ export default function Header() {
   const dispatch = useDispatch();
 
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+ console.log("AUTH:", isAuthenticated);
+  console.log("USER:", user);
+  console.log("TOKEN:", localStorage.getItem("token"));
 
   const handleLogout = () => {
     dispatch(logout());
@@ -46,7 +49,7 @@ export default function Header() {
           Rihla
         </Typography>
 
-        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ width: 100 }} />
 
         {/* ================= GUEST ================= */}
         {!isAuthenticated && (
